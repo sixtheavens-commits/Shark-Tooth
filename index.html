@@ -1,0 +1,1441 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.T – Shark Tooth</title>
+    <style>
+        /* CYBERPUNK VARIABLES */
+        :root {
+            --blood-red: #ff0000;
+            --neon-purple: #b16cff;
+            --cyber-blue: #00ffff;
+            --acid-green: #00ff00;
+            --orange-glitch: #ff8c00;
+            --deep-black: #000000;
+            --matrix-green: #00ff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: var(--deep-black);
+            color: #fff;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* ========== GLITCH INTRO SEQUENCE ========== */
+        #glitchIntro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glitch-line {
+            color: var(--acid-green);
+            font-size: 1.2rem;
+            margin: 5px 0;
+            opacity: 0;
+            text-shadow: 0 0 10px var(--acid-green);
+        }
+
+        .glitch-line:nth-child(1) { animation: type1 1s forwards; }
+        .glitch-line:nth-child(2) { animation: type2 2s forwards; }
+        .glitch-line:nth-child(3) { animation: type3 3s forwards; }
+        .glitch-line:nth-child(4) { animation: type4 4s forwards; }
+
+        @keyframes type1 { to { opacity: 1; } }
+        @keyframes type2 { 50% { opacity: 1; } to { opacity: 1; } }
+        @keyframes type3 { 66% { opacity: 1; } to { opacity: 1; } }
+        @keyframes type4 { 75% { opacity: 1; } to { opacity: 1; } }
+
+        /* ========== BLOOD RAIN ========== */
+        .blood-drop {
+            position: fixed;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--blood-red), rgba(122, 0, 0, 0.8));
+            border-radius: 0 0 50% 50%;
+            pointer-events: none;
+            z-index: 2;
+            filter: blur(0.5px);
+            box-shadow: 0 0 15px var(--blood-red);
+        }
+
+        /* ========== DATA STREAM BACKGROUND ========== */
+        #dataStream {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        /* ========== SCANLINES ========== */
+        .scanline {
+            position: fixed;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-purple), var(--cyber-blue), transparent);
+            box-shadow: 0 0 20px var(--neon-purple);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ========== CLAN STATUS ========== */
+        .clan-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 999;
+        }
+
+        .status-light {
+            width: 12px;
+            height: 12px;
+            background: var(--acid-green);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--acid-green);
+            animation: statusPulse 2s infinite;
+        }
+
+        .status-text {
+            color: var(--acid-green);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            text-shadow: 0 0 10px var(--acid-green);
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ========== ENTER SCREEN ========== */
+        #enterScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1a0028, #000);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9000;
+            gap: 40px;
+        }
+
+        .clan-logo {
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--blood-red);
+            text-shadow: 
+                0 0 30px var(--blood-red),
+                0 0 60px var(--blood-red);
+            letter-spacing: 10px;
+            animation: logoGlitch 3s infinite;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        @keyframes logoGlitch {
+            0%, 100% { transform: translate(0); }
+            10% { transform: translate(-2px, 2px); }
+            20% { transform: translate(2px, -2px); }
+            30% { transform: translate(-2px, -2px); }
+            40% { transform: translate(2px, 2px); }
+            50% { transform: translate(0); }
+        }
+
+        .enter-title {
+            font-size: 3rem;
+            background: linear-gradient(90deg, var(--neon-purple), var(--cyber-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px var(--neon-purple);
+            letter-spacing: 5px;
+            animation: titleFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .enter-btn {
+            padding: 15px 50px;
+            font-size: 1.2rem;
+            background: transparent;
+            color: var(--blood-red);
+            border: 3px solid var(--blood-red);
+            border-radius: 0;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+            margin-top: 30px;
+        }
+
+        .enter-btn:hover {
+            background: rgba(255, 0, 0, 0.1);
+            box-shadow: 0 0 50px var(--blood-red);
+            transform: scale(1.05);
+        }
+
+        /* ========== MUSIC CONTROL ========== */
+        .music-orb {
+            position: fixed;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, var(--neon-purple), transparent);
+            border: 2px solid var(--cyber-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 
+                0 0 30px var(--neon-purple),
+                inset 0 0 20px rgba(0, 255, 255, 0.3);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: orbFloat 3s ease-in-out infinite;
+        }
+
+        .music-orb.playing {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            right: 40px;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(-50%) translateY(0); }
+            50% { transform: translateY(-50%) translateY(-10px); }
+        }
+
+        .music-orb:hover {
+            box-shadow: 
+                0 0 50px var(--neon-purple),
+                0 0 70px var(--cyber-blue),
+                inset 0 0 30px rgba(0, 255, 255, 0.5);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* ========== NAVIGATION ========== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            z-index: 8000;
+            border-bottom: 1px solid var(--neon-purple);
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            box-shadow: 0 0 30px rgba(177, 108, 255, 0.3);
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid var(--neon-purple);
+            color: var(--neon-purple);
+            padding: 10px 20px;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn:hover {
+            background: rgba(177, 108, 255, 0.2);
+            box-shadow: 0 0 20px var(--neon-purple);
+            color: var(--cyber-blue);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active {
+            background: rgba(177, 108, 255, 0.3);
+            border-color: var(--cyber-blue);
+            color: var(--cyber-blue);
+            box-shadow: 0 0 25px var(--cyber-blue);
+        }
+
+        /* ========== SEARCH SYSTEM ========== */
+        .search-wrapper {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 7000;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--neon-purple);
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            outline: none;
+            border-radius: 0;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(177, 108, 255, 0.3);
+        }
+
+        .search-input:focus {
+            border-color: var(--cyber-blue);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.5);
+        }
+
+        .search-filters {
+            display: none;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--neon-purple);
+            border-top: none;
+            padding: 15px;
+            margin-top: -2px;
+        }
+
+        .search-filters.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .filter-tag {
+            padding: 8px;
+            background: rgba(177, 108, 255, 0.1);
+            border: 1px solid var(--neon-purple);
+            color: var(--neon-purple);
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .filter-tag:hover {
+            background: rgba(177, 108, 255, 0.3);
+            box-shadow: 0 0 15px var(--neon-purple);
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        #mainContent {
+            padding-top: 140px;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .roster-title {
+            text-align: center;
+            font-size: 3rem;
+            margin: 40px 0;
+            color: var(--cyber-blue);
+            text-shadow: 
+                0 0 20px var(--cyber-blue),
+                0 0 40px var(--neon-purple);
+            letter-spacing: 8px;
+            position: relative;
+        }
+
+        .roster-title::after {
+            content: '█';
+            animation: cursorBlink 1s infinite;
+            color: var(--acid-green);
+            margin-left: 10px;
+        }
+
+        @keyframes cursorBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* ========== MEMBER TIERS ========== */
+        .tier-section {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .tier-title {
+            font-size: 2rem;
+            color: var(--blood-red);
+            text-shadow: 0 0 20px var(--blood-red);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--blood-red);
+            padding-bottom: 10px;
+            letter-spacing: 4px;
+            animation: tierGlow 2s infinite;
+        }
+
+        @keyframes tierGlow {
+            0%, 100% { text-shadow: 0 0 20px var(--blood-red); }
+            50% { text-shadow: 0 0 40px var(--blood-red); }
+        }
+
+        /* ========== MEMBER GRID ========== */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* ========== MEMBER CARD ========== */
+        .member-card {
+            background: linear-gradient(145deg, rgba(20, 0, 40, 0.9), rgba(10, 0, 20, 0.9));
+            border: 2px solid var(--neon-purple);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            box-shadow: 
+                0 0 20px rgba(177, 108, 255, 0.2),
+                inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .member-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            border-color: var(--cyber-blue);
+            box-shadow: 
+                0 15px 35px rgba(0, 255, 255, 0.4),
+                inset 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+
+        .member-card:hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            animation: hologramScan 1s linear;
+        }
+
+        @keyframes hologramScan {
+            to { left: 100%; }
+        }
+
+        /* OWNER CARD */
+        .member-card.owner {
+            border-color: var(--orange-glitch);
+            background: linear-gradient(145deg, rgba(60, 20, 0, 0.9), rgba(30, 10, 0, 0.9));
+        }
+
+        .member-card.owner:hover {
+            border-color: var(--blood-red);
+            box-shadow: 
+                0 15px 35px rgba(255, 140, 0, 0.4),
+                0 0 60px rgba(255, 0, 0, 0.3);
+        }
+
+        /* GLITCH/ERROR CARD */
+        .member-card.glitch {
+            border-color: var(--blood-red);
+            background: linear-gradient(145deg, rgba(40, 0, 0, 0.9), rgba(20, 0, 0, 0.9));
+            animation: glitchCard 3s infinite;
+        }
+
+        @keyframes glitchCard {
+            0%, 100% { transform: translate(0); opacity: 1; }
+            5% { transform: translate(-3px, 2px); opacity: 0.8; }
+            10% { transform: translate(3px, -2px); opacity: 0.9; }
+            15% { transform: translate(-2px, -3px); }
+            20% { transform: translate(2px, 3px); }
+            25% { transform: translate(0); opacity: 1; }
+        }
+
+        /* ========== MEMBER CONTENT ========== */
+        .member-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .member-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        /* OWNER NAME */
+        .member-name.owner-name {
+            color: var(--orange-glitch);
+            text-shadow: 0 0 15px var(--orange-glitch);
+            animation: ownerGlow 2s infinite;
+        }
+
+        @keyframes ownerGlow {
+            0%, 100% { color: var(--orange-glitch); text-shadow: 0 0 15px var(--orange-glitch); }
+            50% { color: #fff; text-shadow: 0 0 25px #fff; }
+        }
+
+        /* MEMBER NAME */
+        .member-name.regular-name {
+            color: var(--cyber-blue);
+            text-shadow: 0 0 10px var(--cyber-blue);
+            animation: memberGlow 2s infinite;
+        }
+
+        @keyframes memberGlow {
+            0%, 100% { color: var(--cyber-blue); }
+            50% { color: #fff; }
+        }
+
+        .member-role {
+            color: var(--neon-purple);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 5px var(--neon-purple);
+        }
+
+        .game-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .game-tag {
+            background: rgba(177, 108, 255, 0.2);
+            color: var(--neon-purple);
+            padding: 5px 12px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(177, 108, 255, 0.4);
+            transition: all 0.3s;
+        }
+
+        .game-tag:hover {
+            background: rgba(177, 108, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(177, 108, 255, 0.4);
+        }
+
+        /* ========== HALL OF FAME BADGE ========== */
+        .hof-badge {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--blood-red);
+            text-shadow: 
+                0 0 10px var(--blood-red),
+                0 0 20px var(--blood-red);
+            animation: hofPulse 1.5s infinite;
+            letter-spacing: 1px;
+        }
+
+        @keyframes hofPulse {
+            0%, 100% { 
+                color: var(--blood-red); 
+                text-shadow: 0 0 10px var(--blood-red);
+            }
+            50% { 
+                color: #fff; 
+                text-shadow: 0 0 20px #fff, 0 0 30px var(--blood-red);
+            }
+        }
+
+        /* ========== EXPAND BUTTON ========== */
+        .expand-btn {
+            width: 30px;
+            height: 30px;
+            background: transparent;
+            border: 2px solid var(--neon-purple);
+            color: var(--neon-purple);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+
+        .expand-btn:hover {
+            background: var(--neon-purple);
+            color: black;
+            box-shadow: 0 0 20px var(--neon-purple);
+            transform: rotate(90deg);
+        }
+
+        /* ========== STATS ========== */
+        .member-stats {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            border-top: 1px solid rgba(177, 108, 255, 0.3);
+            margin-top: 15px;
+        }
+
+        .member-stats.expanded {
+            max-height: 500px;
+            padding-top: 15px;
+        }
+
+        .stat-item {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--neon-purple);
+            transition: all 0.3s;
+        }
+
+        .stat-item:hover {
+            border-left-color: var(--cyber-blue);
+            background: rgba(0, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        /* ========== SOCIALS OVERLAY ========== */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.98);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .overlay.active {
+            display: flex;
+            animation: overlayIn 0.3s ease;
+        }
+
+        @keyframes overlayIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .socials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 40px;
+            max-width: 800px;
+            width: 90%;
+        }
+
+        .social-btn {
+            background: linear-gradient(145deg, rgba(20, 0, 40, 0.9), rgba(10, 0, 20, 0.9));
+            border: 3px solid var(--neon-purple);
+            padding: 25px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--cyber-blue);
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-btn:hover {
+            border-color: var(--cyber-blue);
+            background: linear-gradient(145deg, rgba(0, 40, 40, 0.9), rgba(0, 20, 20, 0.9));
+            transform: translateY(-10px);
+            box-shadow: 
+                0 20px 40px rgba(0, 255, 255, 0.3),
+                0 0 60px rgba(0, 255, 255, 0.2);
+        }
+
+        .social-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+
+        .social-btn:hover::before {
+            opacity: 1;
+            animation: shine 1s;
+        }
+
+        @keyframes shine {
+            to { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        /* ========== SECRET EASTER EGG ========== */
+        #secretMessage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid var(--blood-red);
+            padding: 40px;
+            z-index: 10001;
+            display: none;
+            text-align: center;
+            box-shadow: 0 0 100px var(--blood-red);
+            animation: secretReveal 1s ease;
+        }
+
+        @keyframes secretReveal {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .enter-title { font-size: 2rem; }
+            .clan-logo { font-size: 2.5rem; letter-spacing: 5px; }
+            .roster-title { font-size: 2rem; letter-spacing: 4px; }
+            .members-grid { grid-template-columns: 1fr; }
+            .music-orb { width: 50px; height: 50px; font-size: 1.5rem; }
+            .music-orb.playing { width: 35px; height: 35px; }
+            .search-filters { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- GLITCH INTRO SEQUENCE -->
+    <div id="glitchIntro">
+        <div class="glitch-line">INITIALIZING S.T SYSTEM...</div>
+        <div class="glitch-line">LOADING CLAN DATA...</div>
+        <div class="glitch-line">ACTIVATING SHARK TOOTH PROTOCOL...</div>
+        <div class="glitch-line">READY FOR BLOOD.</div>
+    </div>
+
+    <!-- CLAN STATUS -->
+    <div class="clan-status">
+        <div class="status-light"></div>
+        <div class="status-text">CLAN ONLINE</div>
+    </div>
+
+    <!-- MUSIC ORB -->
+    <div class="music-orb" id="musicOrb">♪</div>
+
+    <!-- AUDIO -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="glitchSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-computer-glitch-2348.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ENTER SCREEN -->
+    <div id="enterScreen">
+        <div class="clan-logo" id="clanLogo">S.T</div>
+        <div class="enter-title">SHARK TOOTH</div>
+        <button class="enter-btn" id="enterBtn">ENTER CLAN</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="mainContent" style="display: none;">
+        <!-- NAVIGATION -->
+        <nav>
+            <button class="nav-btn active" data-section="roster">ROSTER</button>
+            <button class="nav-btn" data-section="socials">SOCIALS</button>
+            <button class="nav-btn" data-section="about">ABOUT</button>
+        </nav>
+
+        <!-- SEARCH -->
+        <div class="search-wrapper">
+            <input type="text" class="search-input" id="searchInput" placeholder="SEARCH MEMBERS...">
+            <div class="search-filters" id="searchFilters">
+                <div class="filter-tag" data-filter="all">ALL</div>
+                <div class="filter-tag" data-filter="BGMI">BGMI</div>
+                <div class="filter-tag" data-filter="Minecraft">MINECRAFT</div>
+                <div class="filter-tag" data-filter="Roblox">ROBLOX</div>
+                <div class="filter-tag" data-filter="Genshin">GENSHIN</div>
+                <div class="filter-tag" data-filter="owner">OWNER</div>
+                <div class="filter-tag" data-filter="core">CORE</div>
+            </div>
+        </div>
+
+        <!-- ROSTER -->
+        <div class="roster-content" id="rosterSection">
+            <h1 class="roster-title">ROSTER</h1>
+
+            <!-- OWNER -->
+            <div class="tier-section">
+                <div class="tier-title">OWNER</div>
+                <div class="members-grid" id="ownerGrid"></div>
+            </div>
+
+            <!-- CO-LEADER -->
+            <div class="tier-section">
+                <div class="tier-title">CO-LEADER</div>
+                <div class="members-grid" id="coleaderGrid"></div>
+            </div>
+
+            <!-- CORE -->
+            <div class="tier-section">
+                <div class="tier-title">CORE OF S.T</div>
+                <div class="members-grid" id="coreGrid"></div>
+            </div>
+        </div>
+
+        <!-- SOCIALS OVERLAY -->
+        <div class="overlay" id="socialsOverlay">
+            <div class="socials-grid">
+                <a href="https://discord.gg/FUDdZuMS" target="_blank" class="social-btn">
+                    JOIN DISCORD
+                </a>
+                <a href="https://t.me/STsharktooth" target="_blank" class="social-btn">
+                    JOIN TELEGRAM
+                </a>
+                <a href="https://instagram.com/Juvilius.s" target="_blank" class="social-btn">
+                    INSTAGRAM
+                </a>
+                <div class="social-btn" style="cursor: pointer; border-color: var(--acid-green);" id="closeSocials">
+                    CLOSE
+                </div>
+            </div>
+        </div>
+
+        <!-- ABOUT OVERLAY -->
+        <div class="overlay" id="aboutOverlay">
+            <div style="max-width: 600px; padding: 40px; text-align: center;">
+                <h2 style="color: var(--blood-red); margin-bottom: 30px; text-shadow: 0 0 20px var(--blood-red);">ABOUT S.T</h2>
+                <p style="margin-bottom: 20px; line-height: 1.6;">Est. 2021. Within our territory, S.T runs everyone.</p>
+                <p style="margin-bottom: 20px; line-height: 1.6;">This is primarily a gaming clan — we play games, do fun stuff, and also devour e-coms.</p>
+                <p style="margin-bottom: 30px; line-height: 1.6;">Two cases have been registered against our clan, 2023–2024.</p>
+                <p style="color: var(--blood-red); font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 10px var(--blood-red);">
+                    WHEN WE SAY 'RESCUE,' WE MEAN THE DEATH OF OPPS.
+                </p>
+                <div class="social-btn" style="margin-top: 40px; display: inline-block; padding: 15px 40px;" id="closeAbout">
+                    CLOSE
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECRET MESSAGE -->
+    <div id="secretMessage">
+        <h2 style="color: var(--blood-red); margin-bottom: 20px;">ACCESS GRANTED</h2>
+        <p style="margin-bottom: 20px;">You found the hidden protocol.</p>
+        <p style="color: var(--acid-green); font-size: 1.2rem;">S.T runs deeper than you know.</p>
+        <div class="social-btn" style="margin-top: 30px; padding: 10px 30px;" id="closeSecret">
+            [CLOSE]
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // ========== CLAN DATA ==========
+        const clanData = {
+            owner: [{
+                id: 1,
+                name: "JUVILIUS",
+                role: "MAIN LEADER",
+                games: ["All-Games"],
+                stats: [
+                    "Minecraft: Builder, Strategist, Shadow • 6 years experience",
+                    "PUBG Global: Level 81 • Season 9 Conqueror • 11 KD • 5 Finger • Supporter",
+                    "Pokemon Unite: Gengar Main • 7z Pokemon Emblems • 4 years experience",
+                    "Chess: 800 ELO • Average • Not Regular",
+                    "Genshin Impact: Level 37 • Keqing Main • Rapid",
+                    "Roblox: Blox Fruits Master • Dead Rails Expert • Legends of Speed"
+                ]
+            }],
+            
+            coleader: [{
+                id: 2,
+                name: "VION",
+                role: "CO-LEADER",
+                games: ["BGMI", "Minecraft", "Roblox"],
+                stats: [
+                    "BGMI: 4 Finger Claw • Supporter • Level 46",
+                    "Minecraft: 8 years experience • PvPer • Builder",
+                    "Roblox: Dead Rails"
+                ]
+            }],
+            
+            core: [
+                {
+                    id: 3,
+                    name: "KAIZEN",
+                    role: "CORE MEMBER",
+                    games: ["BGMI", "Minecraft"],
+                    stats: [
+                        "BGMI: 4 Finger Claw • Assaulter • Level 59 • 3 KD",
+                        "Minecraft: 8 years experience • PvPer • Craftsman"
+                    ]
+                },
+                {
+                    id: 4,
+                    name: "AORXZ",
+                    role: "CORE MEMBER",
+                    games: [],
+                    stats: ["[ DATA CORRUPTED ]"],
+                    isGlitch: true
+                },
+                {
+                    id: 5,
+                    name: "SARNALI",
+                    role: "CORE MEMBER",
+                    games: ["Roblox", "Minecraft"],
+                    stats: [
+                        "Minecraft: 4 years experience • Builder",
+                        "Roblox: Grow a Garden • Scary Shawarma • Petapeta"
+                    ]
+                },
+                {
+                    id: 6,
+                    name: "BAZU",
+                    role: "CORE MEMBER",
+                    games: ["Minecraft", "BGMI"],
+                    stats: [
+                        "BGMI: Thumb Player • 6 KD • 7 years old",
+                        "Minecraft: Builder • Miner • Explorer • 6 years old",
+                        "Chess: Plays with Amy"
+                    ]
+                },
+                {
+                    id: 7,
+                    name: "AMY",
+                    role: "CORE MEMBER",
+                    games: ["Genshin", "Minecraft", "BGMI"],
+                    stats: [
+                        "Genshin Impact: Semi Pro",
+                        "Minecraft: Rookie • 1 year experience • Builder",
+                        "BGMI: Rookie • 2 Finger Claw • Level 20+ • Bronze Rank",
+                        "Call of Duty: 3 Claw • Gold Rank • Level 31"
+                    ]
+                },
+                {
+                    id: 8,
+                    name: "VAIBHAV",
+                    role: "CORE MEMBER",
+                    games: ["Minecraft"],
+                    stats: ["Stats coming soon..."]
+                },
+                {
+                    id: 9,
+                    name: "RAVE",
+                    role: "CORE MEMBER",
+                    games: ["BGMI", "Minecraft", "Roblox"],
+                    stats: [
+                        "BGMI: 5 Finger • 3 KD • Assaulter • Level 70",
+                        "Minecraft: 7 years experience • Mindplays",
+                        "Roblox: Dead Rails Expert"
+                    ]
+                },
+                {
+                    id: 10,
+                    name: "SAPROX",
+                    role: "CORE MEMBER",
+                    games: ["Genshin", "Minecraft", "Roblox"],
+                    stats: [
+                        "Call of Duty: 4 Finger Claw • Master Rank • Level 57",
+                        "Minecraft: 4 years experience • Redstone Expert • Commands Expert",
+                        "Roblox: Mainly Obbys"
+                    ]
+                },
+                {
+                    id: 11,
+                    name: "XELKI",
+                    role: "CORE MEMBER",
+                    games: ["Discord"],
+                    stats: [
+                        "Valorant: Expert",
+                        "Discord: Best of the Best Tier",
+                        "Instagram+: NC/Rdps/spc"
+                    ]
+                },
+                {
+                    id: 12,
+                    name: "UMAR", // MOVED FROM COM OFF TO CORE
+                    role: "CORE MEMBER",
+                    games: ["Multiple"],
+                    stats: ["Active member • Versatile gamer"]
+                }
+            ]
+        };
+
+        // ========== GLOBALS ==========
+        let bloodInterval;
+        let logoClickCount = 0;
+        const music = document.getElementById('bgMusic');
+        const glitchSound = document.getElementById('glitchSound');
+        const musicOrb = document.getElementById('musicOrb');
+
+        // ========== INITIALIZE ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            // Start glitch intro
+            setTimeout(() => {
+                document.getElementById('glitchIntro').style.display = 'none';
+                initEffects();
+                setupEventListeners();
+                renderClan();
+                
+                // Try to preload glitch sound
+                glitchSound.load();
+            }, 4000);
+        });
+
+        // ========== EFFECTS ==========
+        function initEffects() {
+            // Data stream background
+            createDataStream();
+            
+            // Scanlines
+            createScanlines();
+            
+            // Blood rain
+            startBloodRain();
+        }
+
+        function createDataStream() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.id = 'dataStream';
+            document.body.appendChild(canvas);
+            
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            
+            const chars = '01';
+            const streams = [];
+            
+            class Stream {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height - canvas.height;
+                    this.speed = 2 + Math.random() * 5;
+                    this.length = 10 + Math.random() * 20;
+                    this.chars = Array.from({length: this.length}, () => chars[Math.floor(Math.random() * chars.length)]);
+                }
+                
+                update() {
+                    this.y += this.speed;
+                    if (this.y > canvas.height) {
+                        this.y = -this.length * 20;
+                        this.x = Math.random() * canvas.width;
+                    }
+                }
+                
+                draw() {
+                    ctx.fillStyle = 'rgba(0, 255, 136, 0.3)';
+                    ctx.font = '16px monospace';
+                    
+                    this.chars.forEach((char, i) => {
+                        const alpha = 1 - (i / this.length);
+                        ctx.fillStyle = `rgba(0, 255, 136, ${alpha * 0.3})`;
+                        ctx.fillText(char, this.x, this.y + (i * 20));
+                    });
+                }
+            }
+            
+            for (let i = 0; i < 30; i++) streams.push(new Stream());
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                streams.forEach(stream => {
+                    stream.update();
+                    stream.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+            
+            resize();
+            animate();
+            window.addEventListener('resize', resize);
+        }
+
+        function createScanlines() {
+            for (let i = 0; i < 3; i++) {
+                const scanline = document.createElement('div');
+                scanline.className = 'scanline';
+                scanline.style.top = Math.random() * 100 + 'vh';
+                scanline.style.animation = `scan1 ${8 + Math.random() * 10}s linear infinite`;
+                scanline.style.animationDelay = (i * 2) + 's';
+                document.body.appendChild(scanline);
+            }
+        }
+
+        function startBloodRain() {
+            bloodInterval = setInterval(() => {
+                if (Math.random() > 0.6) return;
+                
+                const blood = document.createElement('div');
+                blood.className = 'blood-drop';
+                blood.style.left = Math.random() * window.innerWidth + 'px';
+                blood.style.height = (20 + Math.random() * 40) + 'px';
+                blood.style.animation = `bloodFall ${2 + Math.random() * 2}s linear forwards`;
+                
+                document.body.appendChild(blood);
+                
+                setTimeout(() => blood.remove(), 4000);
+            }, 300);
+        }
+
+        // ========== MEMBER CARDS ==========
+        function renderClan() {
+            renderSection('ownerGrid', clanData.owner, true);
+            renderSection('coleaderGrid', clanData.coleader);
+            renderSection('coreGrid', clanData.core);
+        }
+
+        function renderSection(gridId, members, isOwner = false) {
+            const grid = document.getElementById(gridId);
+            grid.innerHTML = members.map(member => `
+                <div class="member-card ${isOwner ? 'owner' : ''} ${member.isGlitch ? 'glitch' : ''}" 
+                     data-name="${member.name.toLowerCase()}"
+                     data-role="${member.role.toLowerCase()}"
+                     data-games="${member.games.join(',').toLowerCase()}">
+                    <div class="member-header">
+                        <div>
+                            <div class="member-name ${isOwner ? 'owner-name' : 'regular-name'}">
+                                ${member.name}
+                            </div>
+                            <div class="member-role">${member.role}</div>
+                            <div class="game-tags">
+                                ${member.games.length > 0 
+                                    ? member.games.map(game => `<span class="game-tag">${game}</span>`).join('')
+                                    : '<span class="game-tag" style="border-color: var(--blood-red); color: var(--blood-red);">UNKNOWN</span>'
+                                }
+                            </div>
+                        </div>
+                        <button class="expand-btn" onclick="toggleStats(this)">+</button>
+                    </div>
+                    <div class="member-stats">
+                        ${member.stats.map(stat => `
+                            <div class="stat-item">${stat}</div>
+                        `).join('')}
+                    </div>
+                    ${isOwner ? '<div class="hof-badge">HALL OF FAME</div>' : ''}
+                </div>
+            `).join('');
+        }
+
+        // ========== INTERACTIONS ==========
+        function toggleStats(btn) {
+            const card = btn.closest('.member-card');
+            const stats = card.querySelector('.member-stats');
+            
+            if (stats.classList.contains('expanded')) {
+                stats.classList.remove('expanded');
+                btn.textContent = '+';
+            } else {
+                stats.classList.add('expanded');
+                btn.textContent = '−';
+                
+                // Play glitch sound on expand if it's a glitch card
+                if (card.classList.contains('glitch')) {
+                    playGlitchSound();
+                }
+            }
+        }
+
+        function playGlitchSound() {
+            glitchSound.currentTime = 0;
+            glitchSound.play().catch(() => {});
+        }
+
+        // ========== SEARCH & FILTER ==========
+        function setupEventListeners() {
+            // Search input
+            const searchInput = document.getElementById('searchInput');
+            const searchFilters = document.getElementById('searchFilters');
+            
+            searchInput.addEventListener('focus', () => {
+                searchFilters.classList.add('active');
+            });
+            
+            searchInput.addEventListener('input', (e) => {
+                filterMembers(e.target.value.toLowerCase());
+            });
+            
+            // Filter tags
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                tag.addEventListener('click', function() {
+                    const filter = this.dataset.filter;
+                    searchInput.value = '';
+                    
+                    if (filter === 'all') {
+                        showAllMembers();
+                    } else {
+                        filterMembers(filter);
+                    }
+                    
+                    searchFilters.classList.remove('active');
+                });
+            });
+            
+            // Click outside closes filters
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-wrapper')) {
+                    searchFilters.classList.remove('active');
+                }
+            });
+            
+            // Navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const section = this.dataset.section;
+                    if (section === 'roster') {
+                        document.getElementById('rosterSection').style.display = 'block';
+                        document.querySelector('.search-wrapper').style.display = 'block';
+                        document.getElementById('socialsOverlay').classList.remove('active');
+                        document.getElementById('aboutOverlay').classList.remove('active');
+                    } else if (section === 'socials') {
+                        document.getElementById('socialsOverlay').classList.add('active');
+                        document.getElementById('rosterSection').style.display = 'none';
+                        document.querySelector('.search-wrapper').style.display = 'none';
+                    } else if (section === 'about') {
+                        document.getElementById('aboutOverlay').classList.add('active');
+                        document.getElementById('rosterSection').style.display = 'none';
+                        document.querySelector('.search-wrapper').style.display = 'none';
+                    }
+                });
+            });
+            
+            // Socials close
+            document.getElementById('closeSocials').addEventListener('click', () => {
+                document.getElementById('socialsOverlay').classList.remove('active');
+                document.querySelector('.nav-btn[data-section="roster"]').click();
+            });
+            
+            document.getElementById('closeAbout').addEventListener('click', () => {
+                document.getElementById('aboutOverlay').classList.remove('active');
+                document.querySelector('.nav-btn[data-section="roster"]').click();
+            });
+            
+            // Enter clan
+            document.getElementById('enterBtn').addEventListener('click', enterClan);
+            
+            // Music orb
+            musicOrb.addEventListener('click', toggleMusic);
+            
+            // Clan logo (easter egg)
+            document.getElementById('clanLogo').addEventListener('click', handleLogoClick);
+            
+            // Close secret
+            document.getElementById('closeSecret').addEventListener('click', () => {
+                document.getElementById('secretMessage').style.display = 'none';
+            });
+            
+            // Member card hover glitch
+            document.addEventListener('mouseover', (e) => {
+                if (e.target.closest('.member-card')) {
+                    const card = e.target.closest('.member-card');
+                    if (card.classList.contains('glitch') && Math.random() > 0.7) {
+                        playGlitchSound();
+                    }
+                }
+            });
+            
+            // Blood splatter on click
+            document.addEventListener('click', createBloodSplatter);
+        }
+
+        function filterMembers(query) {
+            document.querySelectorAll('.member-card').forEach(card => {
+                const name = card.dataset.name;
+                const role = card.dataset.role;
+                const games = card.dataset.games;
+                
+                const matches = name.includes(query) || 
+                               role.includes(query) || 
+                               games.includes(query) ||
+                               query === '';
+                
+                card.style.display = matches ? 'block' : 'none';
+                
+                if (matches) {
+                    card.style.animation = 'none';
+                    setTimeout(() => {
+                        card.style.animation = '';
+                    }, 10);
+                }
+            });
+        }
+
+        function showAllMembers() {
+            document.querySelectorAll('.member-card').forEach(card => {
+                card.style.display = 'block';
+            });
+        }
+
+        // ========== MUSIC ==========
+        function toggleMusic() {
+            if (music.paused) {
+                music.play()
+                    .then(() => {
+                        musicOrb.classList.add('playing');
+                        musicOrb.textContent = '♫';
+                    })
+                    .catch(e => {
+                        console.log('Autoplay prevented:', e);
+                        musicOrb.textContent = '▶';
+                    });
+            } else {
+                music.pause();
+                musicOrb.classList.remove('playing');
+                musicOrb.textContent = '♪';
+            }
+        }
+
+        // ========== ENTER CLAN ==========
+        function enterClan() {
+            const enterScreen = document.getElementById('enterScreen');
+            const mainContent = document.getElementById('mainContent');
+            
+            enterScreen.style.opacity = '0';
+            enterScreen.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                enterScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                
+                // Trigger animations
+                setTimeout(() => {
+                    document.querySelectorAll('.tier-section').forEach((section, i) => {
+                        setTimeout(() => {
+                            section.style.opacity = '1';
+                            section.style.transform = 'translateY(0)';
+                        }, i * 200);
+                    });
+                }, 100);
+                
+                // Start music
+                setTimeout(() => {
+                    music.volume = 0.4;
+                    toggleMusic();
+                }, 500);
+            }, 800);
+        }
+
+        // ========== BLOOD SPLATTER ==========
+        function createBloodSplatter(e) {
+            if (Math.random() > 0.3) return;
+            
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const splatter = document.createElement('div');
+                    splatter.className = 'blood-drop';
+                    splatter.style.left = (e.clientX + Math.random() * 40 - 20) + 'px';
+                    splatter.style.top = (e.clientY + Math.random() * 40 - 20) + 'px';
+                    splatter.style.width = (1 + Math.random() * 3) + 'px';
+                    splatter.style.height = (1 + Math.random() * 3) + 'px';
+                    splatter.style.borderRadius = '50%';
+                    splatter.style.animation = `none`;
+                    splatter.style.opacity = '0.8';
+                    
+                    document.body.appendChild(splatter);
+                    
+                    setTimeout(() => {
+                        splatter.style.opacity = '0';
+                        setTimeout(() => splatter.remove(), 1000);
+                    }, 100);
+                }, i * 50);
+            }
+        }
+
+        // ========== EASTER EGG ==========
+        function handleLogoClick() {
+            logoClickCount++;
+            
+            if (logoClickCount === 5) {
+                document.getElementById('secretMessage').style.display = 'block';
+                logoClickCount = 0;
+                
+                // Add dramatic effect
+                document.querySelectorAll('.scanline').forEach(line => {
+                    line.style.background = 'var(--blood-red)';
+                    line.style.boxShadow = '0 0 40px var(--blood-red)';
+                });
+                
+                setTimeout(() => {
+                    document.querySelectorAll('.scanline').forEach(line => {
+                        line.style.background = '';
+                        line.style.boxShadow = '';
+                    });
+                }, 3000);
+            }
+            
+            // Visual feedback
+            const logo = document.getElementById('clanLogo');
+            logo.style.transform = 'scale(1.1)';
+            logo.style.color = logoClickCount >= 3 ? 'var(--blood-red)' : 'var(--neon-purple)';
+            
+            setTimeout(() => {
+                logo.style.transform = '';
+            }, 200);
+        }
+
+        // CSS for blood fall animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes bloodFall {
+                to {
+                    transform: translateY(100vh);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
