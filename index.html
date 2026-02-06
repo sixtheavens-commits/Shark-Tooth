@@ -1,0 +1,1528 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.T – SHARK TOOTH</title>
+    <style>
+        /* ========== RESET & BASE ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            cursor: default;
+        }
+
+        /* ========== BLOOD RAIN ========== */
+        .blood {
+            position: fixed;
+            width: 2px;
+            background: linear-gradient(to bottom, #ff0000, #800000);
+            border-radius: 0 0 50% 50%;
+            pointer-events: none;
+            z-index: 1;
+            filter: blur(0.8px);
+            box-shadow: 0 0 15px #ff0000;
+            animation: bloodFall linear forwards;
+        }
+
+        @keyframes bloodFall {
+            to { transform: translateY(120vh); opacity: 0; }
+        }
+
+        /* ========== SCANLINES ========== */
+        .scanline {
+            position: fixed;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #b16cff, #00ffff, #b16cff, transparent);
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.4;
+            box-shadow: 0 0 20px #b16cff;
+        }
+
+        .scanline-1 {
+            animation: scanDown 10s linear infinite;
+        }
+
+        .scanline-2 {
+            animation: scanUp 14s linear infinite;
+            animation-delay: -5s;
+        }
+
+        @keyframes scanDown {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        @keyframes scanUp {
+            0% { top: 100%; }
+            100% { top: 0; }
+        }
+
+        /* ========== GRID BACKGROUND ========== */
+        #gridCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        /* ========== CLAN STATUS ========== */
+        .clan-status {
+            position: fixed;
+            top: 18px;
+            right: 20px;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.85);
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 255, 0, 0.5);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #00ff00;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #00ff00;
+            animation: statusPulse 2s infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            color: #00ff00;
+            font-size: 0.85rem;
+            text-shadow: 0 0 8px #00ff00;
+            letter-spacing: 1.5px;
+            font-weight: bold;
+        }
+
+        /* ========== MUSIC BUTTON ========== */
+        .music-btn {
+            position: fixed;
+            top: 18px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background: rgba(177, 108, 255, 0.15);
+            border: 3px solid #b16cff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: #b16cff;
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 30px rgba(177, 108, 255, 0.7);
+            text-shadow: 0 0 15px #b16cff;
+            user-select: none;
+        }
+
+        .music-btn:hover {
+            background: rgba(177, 108, 255, 0.25);
+            box-shadow: 0 0 50px #b16cff;
+            transform: scale(1.15);
+        }
+
+        .music-btn.playing {
+            width: 25px;
+            height: 25px;
+            font-size: 0.9rem;
+            opacity: 0.6;
+            pointer-events: none;
+            border-width: 1px;
+            box-shadow: 0 0 10px #b16cff;
+        }
+
+        /* ========== ENTER SCREEN ========== */
+        #enterScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1a0028, #000000);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            gap: 35px;
+        }
+
+        .logo {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #ff0000;
+            text-shadow: 
+                0 0 30px #ff0000,
+                0 0 60px #ff0000;
+            letter-spacing: 15px;
+            animation: logoGlitch 5s infinite;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        @keyframes logoGlitch {
+            0%, 100% { transform: translate(0); }
+            2% { transform: translate(-4px, 3px); text-shadow: 0 0 40px #ff0000; }
+            4% { transform: translate(4px, -3px); }
+            6% { transform: translate(-3px, -4px); }
+            8% { transform: translate(3px, 4px); }
+            10% { transform: translate(0); }
+        }
+
+        .title {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #b16cff, #00ffff, #b16cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 25px #b16cff;
+            letter-spacing: 5px;
+            animation: titleFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(-15px); opacity: 0.9; }
+        }
+
+        .enter-btn {
+            padding: 15px 55px;
+            font-size: 1.1rem;
+            background: transparent;
+            color: #ff0000;
+            border: 3px solid #ff0000;
+            border-radius: 0;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: bold;
+            margin-top: 40px;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
+        }
+
+        .enter-btn:hover {
+            background: rgba(255, 0, 0, 0.1);
+            box-shadow: 0 0 40px #ff0000;
+            transform: scale(1.08);
+            letter-spacing: 4px;
+        }
+
+        .enter-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 0, 0, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .enter-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .punchline {
+            position: absolute;
+            bottom: 50px;
+            color: #888;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        #mainContent {
+            display: none;
+            padding-top: 100px;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* ========== NAVIGATION ========== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 18px 0;
+            z-index: 800;
+            border-bottom: 2px solid rgba(177, 108, 255, 0.4);
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid #b16cff;
+            color: #b16cff;
+            padding: 10px 25px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn:hover {
+            background: rgba(177, 108, 255, 0.15);
+            color: #00ffff;
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active {
+            background: rgba(177, 108, 255, 0.25);
+            border-color: #00ffff;
+            color: #00ffff;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.7);
+        }
+
+        /* ========== SEARCH SYSTEM ========== */
+        .search-container {
+            position: fixed;
+            top: 85px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 700;
+            width: 90%;
+            max-width: 700px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 14px 25px;
+            background: rgba(20, 0, 40, 0.85);
+            border: 2px solid #b16cff;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            outline: none;
+            border-radius: 0;
+            transition: all 0.3s;
+            box-shadow: 0 0 25px rgba(177, 108, 255, 0.4);
+        }
+
+        .search-box:focus {
+            border-color: #00ffff;
+            box-shadow: 0 0 35px rgba(0, 255, 255, 0.6);
+        }
+
+        .search-box::placeholder {
+            color: #aaa;
+            letter-spacing: 1px;
+        }
+
+        .filter-popup {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(10, 0, 25, 0.98);
+            border: 2px solid #b16cff;
+            border-top: none;
+            padding: 20px;
+            margin-top: -2px;
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .filter-popup.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+            animation: popupSlide 0.3s ease;
+        }
+
+        @keyframes popupSlide {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .filter-tag {
+            padding: 10px;
+            background: rgba(177, 108, 255, 0.1);
+            border: 1px solid rgba(177, 108, 255, 0.4);
+            color: #b16cff;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+
+        .filter-tag:hover {
+            background: rgba(177, 108, 255, 0.3);
+            border-color: #b16cff;
+            box-shadow: 0 0 15px #b16cff;
+            transform: translateY(-3px);
+        }
+
+        /* ========== ROSTER TITLE ========== */
+        .roster-title {
+            text-align: center;
+            font-size: 3.2rem;
+            margin: 60px 0 40px;
+            color: #00ffff;
+            text-shadow: 
+                0 0 25px #00ffff,
+                0 0 50px #b16cff;
+            letter-spacing: 8px;
+            position: relative;
+            animation: titlePulse 3s infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { text-shadow: 0 0 25px #00ffff, 0 0 50px #b16cff; }
+            50% { text-shadow: 0 0 35px #00ffff, 0 0 70px #b16cff; }
+        }
+
+        /* ========== TIER SECTIONS ========== */
+        .tier-section {
+            max-width: 1300px;
+            margin: 70px auto;
+            padding: 0 25px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .tier-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tier-title {
+            font-size: 2rem;
+            color: #ff0000;
+            text-shadow: 0 0 20px #ff0000;
+            margin-bottom: 35px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #ff0000;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+            animation: tierGlow 2.5s infinite;
+        }
+
+        @keyframes tierGlow {
+            0%, 100% { text-shadow: 0 0 20px #ff0000; }
+            50% { text-shadow: 0 0 40px #ff0000, 0 0 60px #ff0000; }
+        }
+
+        /* ========== MEMBER GRID ========== */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        /* ========== MEMBER CARD ========== */
+        .member-card {
+            background: linear-gradient(145deg, rgba(30, 0, 60, 0.9), rgba(15, 0, 30, 0.95));
+            border: 2px solid #b16cff;
+            padding: 22px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
+            box-shadow: 
+                0 5px 25px rgba(177, 108, 255, 0.3),
+                inset 0 0 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .member-card:hover {
+            transform: translateY(-8px);
+            border-color: #00ffff;
+            box-shadow: 
+                0 15px 40px rgba(0, 255, 255, 0.4),
+                inset 0 0 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .member-card.expanded {
+            background: linear-gradient(145deg, rgba(40, 10, 70, 0.95), rgba(20, 0, 40, 0.98));
+            border-color: #ff8c00;
+            box-shadow: 
+                0 10px 35px rgba(255, 140, 0, 0.5),
+                inset 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+
+        .member-card.owner {
+            background: linear-gradient(145deg, rgba(70, 30, 0, 0.9), rgba(35, 15, 0, 0.95));
+            border-color: #ff8c00;
+        }
+
+        .member-card.owner:hover {
+            border-color: #ff0000;
+            box-shadow: 
+                0 15px 40px rgba(255, 0, 0, 0.5),
+                inset 0 0 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .member-card.glitch {
+            background: linear-gradient(145deg, rgba(40, 0, 0, 0.9), rgba(20, 0, 0, 0.95));
+            border-color: #ff0000;
+            animation: glitchCard 4s infinite;
+        }
+
+        @keyframes glitchCard {
+            0%, 100% { transform: translate(0); opacity: 1; filter: hue-rotate(0); }
+            3% { transform: translate(-3px, 2px); opacity: 0.9; filter: hue-rotate(90deg); }
+            6% { transform: translate(3px, -2px); opacity: 0.95; }
+            9% { transform: translate(-2px, -3px); }
+            12% { transform: translate(2px, 3px); }
+            15% { transform: translate(0); opacity: 1; filter: hue-rotate(0); }
+        }
+
+        /* ========== MEMBER NAME GLOWS ========== */
+        .member-name {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        /* OWNER: Orange → White */
+        .owner-name {
+            animation: ownerGlow 1.5s infinite;
+        }
+
+        @keyframes ownerGlow {
+            0%, 100% { 
+                color: #ff8c00; 
+                text-shadow: 0 0 15px #ff8c00, 0 0 30px #ff8c00; 
+            }
+            50% { 
+                color: #ffffff; 
+                text-shadow: 0 0 25px #ffffff, 0 0 50px #ffffff; 
+            }
+        }
+
+        /* CO-LEADER: Brown → White */
+        .coleader-name {
+            animation: coleaderGlow 2s infinite;
+        }
+
+        @keyframes coleaderGlow {
+            0%, 100% { 
+                color: #8b4513; 
+                text-shadow: 0 0 12px #8b4513, 0 0 24px #8b4513; 
+            }
+            50% { 
+                color: #ffffff; 
+                text-shadow: 0 0 20px #ffffff, 0 0 40px #ffffff; 
+            }
+        }
+
+        /* CORE: Cyan → Grey → White → Black → Red */
+        .core-name {
+            animation: coreGlow 5s infinite;
+        }
+
+        @keyframes coreGlow {
+            0% { color: #00ffff; text-shadow: 0 0 15px #00ffff; }
+            20% { color: #808080; text-shadow: 0 0 15px #808080; }
+            40% { color: #ffffff; text-shadow: 0 0 20px #ffffff; }
+            60% { color: #000000; text-shadow: 0 0 10px #ffffff; }
+            80% { color: #ff0000; text-shadow: 0 0 15px #ff0000; }
+            100% { color: #00ffff; text-shadow: 0 0 15px #00ffff; }
+        }
+
+        /* ========== ROLE & GAME TAGS ========== */
+        .member-role {
+            color: #d0a0ff;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 8px #d0a0ff;
+        }
+
+        .game-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .game-tag {
+            background: rgba(20, 0, 40, 0.9);
+            color: #b16cff;
+            padding: 6px 14px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            border: 1px solid #b16cff;
+            box-shadow: 0 0 10px rgba(177, 108, 255, 0.3);
+            transition: all 0.2s;
+        }
+
+        .game-tag:hover {
+            background: rgba(177, 108, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(177, 108, 255, 0.5);
+        }
+
+        .game-tag.error {
+            background: rgba(40, 0, 0, 0.9);
+            color: #ff0000;
+            border-color: #ff0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+        }
+
+        /* ========== EXPAND BUTTON ========== */
+        .expand-btn {
+            position: absolute;
+            top: 22px;
+            right: 22px;
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: 2px solid #b16cff;
+            color: #b16cff;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            border-radius: 3px;
+            z-index: 10;
+        }
+
+        .expand-btn:hover {
+            background: rgba(177, 108, 255, 0.2);
+            box-shadow: 0 0 20px #b16cff;
+            transform: rotate(90deg);
+        }
+
+        .expand-btn.active {
+            background: rgba(255, 140, 0, 0.2);
+            border-color: #ff8c00;
+            color: #ff8c00;
+            box-shadow: 0 0 20px #ff8c00;
+            transform: rotate(45deg);
+        }
+
+        /* ========== HALL OF FAME BADGE ========== */
+        .hof-badge {
+            position: absolute;
+            bottom: 18px;
+            right: 18px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #ff0000;
+            text-shadow: 
+                0 0 12px #ff0000,
+                0 0 24px #ff0000;
+            animation: hofPulse 1.8s infinite;
+            letter-spacing: 1px;
+            z-index: 5;
+        }
+
+        @keyframes hofPulse {
+            0%, 100% { 
+                color: #ff0000; 
+                text-shadow: 0 0 12px #ff0000, 0 0 24px #ff0000; 
+            }
+            50% { 
+                color: #ffffff; 
+                text-shadow: 0 0 20px #ffffff, 0 0 40px #ffffff, 0 0 60px #ff0000; 
+            }
+        }
+
+        /* ========== STATS SECTION ========== */
+        .member-stats {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-top: 1px solid rgba(177, 108, 255, 0.3);
+            margin-top: 20px;
+        }
+
+        .member-stats.expanded {
+            max-height: 800px;
+            padding-top: 20px;
+        }
+
+        .stat-item {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #b16cff;
+            transition: all 0.3s;
+        }
+
+        .stat-item:hover {
+            border-left-color: #00ffff;
+            background: rgba(0, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        /* ========== SOCIALS OVERLAY ========== */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.98);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .overlay.active {
+            display: flex;
+            animation: overlayIn 0.4s ease;
+        }
+
+        @keyframes overlayIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .socials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 35px;
+            padding: 50px;
+            max-width: 900px;
+            width: 90%;
+        }
+
+        .social-btn {
+            background: linear-gradient(145deg, rgba(30, 0, 60, 0.95), rgba(15, 0, 30, 0.98));
+            border: 3px solid #b16cff;
+            padding: 30px 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #00ffff;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+        }
+
+        .social-btn:hover {
+            border-color: #00ffff;
+            background: linear-gradient(145deg, rgba(0, 40, 60, 0.95), rgba(0, 20, 30, 0.98));
+            transform: translateY(-10px);
+            box-shadow: 
+                0 20px 50px rgba(0, 255, 255, 0.4),
+                0 0 80px rgba(0, 255, 255, 0.3);
+            letter-spacing: 3px;
+        }
+
+        .social-btn::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.8s;
+            opacity: 0;
+        }
+
+        .social-btn:hover::before {
+            opacity: 1;
+            animation: shine 1.2s;
+        }
+
+        @keyframes shine {
+            to { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        /* ========== ABOUT OVERLAY ========== */
+        .about-content {
+            max-width: 800px;
+            padding: 50px;
+            background: rgba(10, 0, 25, 0.95);
+            border: 3px solid #b16cff;
+            box-shadow: 0 0 50px rgba(177, 108, 255, 0.5);
+            position: relative;
+        }
+
+        .about-title {
+            color: #ff0000;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 25px #ff0000;
+            letter-spacing: 4px;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: #ddd;
+        }
+
+        .brutal-box {
+            background: linear-gradient(145deg, rgba(40, 0, 0, 0.9), rgba(20, 0, 0, 0.95));
+            border: 2px solid #ff0000;
+            padding: 25px;
+            margin: 40px 0;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+            box-shadow: 
+                0 0 30px rgba(255, 0, 0, 0.5),
+                inset 0 0 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .brutal-text {
+            color: #ff5555;
+            font-size: 1.3rem;
+            line-height: 1.6;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+            font-weight: bold;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .brutal-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 0, 0, 0.1), transparent);
+            animation: brutalGlow 4s infinite linear;
+            z-index: 1;
+        }
+
+        @keyframes brutalGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: transparent;
+            border: none;
+            color: #b16cff;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #ff0000;
+            transform: rotate(90deg) scale(1.2);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .logo { font-size: 3rem; letter-spacing: 8px; }
+            .title { font-size: 1.8rem; }
+            .roster-title { font-size: 2.2rem; letter-spacing: 5px; }
+            .members-grid { grid-template-columns: 1fr; }
+            .tier-section { padding: 0 15px; }
+            .tier-title { font-size: 1.6rem; }
+            .member-name { font-size: 1.4rem; }
+            .music-btn { width: 50px; height: 50px; font-size: 1.8rem; }
+            .music-btn.playing { width: 22px; height: 22px; }
+            .search-container { top: 75px; }
+            .socials-grid { grid-template-columns: 1fr; padding: 30px; }
+            nav { gap: 15px; padding: 15px 0; }
+            .nav-btn { padding: 8px 15px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BLOOD RAIN -->
+    <div class="scanline scanline-1"></div>
+    <div class="scanline scanline-2"></div>
+
+    <!-- GRID BACKGROUND -->
+    <canvas id="gridCanvas"></canvas>
+
+    <!-- CLAN STATUS -->
+    <div class="clan-status">
+        <div class="status-dot"></div>
+        <div class="status-text">CLAN ONLINE</div>
+    </div>
+
+    <!-- MUSIC BUTTON -->
+    <div class="music-btn" id="musicBtn">♪</div>
+
+    <!-- AUDIO -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ENTER SCREEN -->
+    <div id="enterScreen">
+        <div class="logo" id="clanLogo">S.T</div>
+        <div class="title">SHARK TOOTH</div>
+        <button class="enter-btn" id="enterBtn">ENTER CLAN</button>
+        <div class="punchline">BLACK • PURPLE • BLOOD</div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="mainContent">
+        <!-- NAVIGATION -->
+        <nav>
+            <button class="nav-btn active" data-section="roster">ROSTER</button>
+            <button class="nav-btn" data-section="socials">SOCIALS</button>
+            <button class="nav-btn" data-section="about">ABOUT</button>
+        </nav>
+
+        <!-- SEARCH -->
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchBox" placeholder="SEARCH MEMBERS BY NAME, ROLE, OR GAME..." autocomplete="off">
+            <div class="filter-popup" id="filterPopup">
+                <div class="filter-tag" data-filter="all">ALL MEMBERS</div>
+                <div class="filter-tag" data-filter="owner">OWNER</div>
+                <div class="filter-tag" data-filter="coleader">CO-LEADER</div>
+                <div class="filter-tag" data-filter="core">CORE</div>
+                <div class="filter-tag" data-filter="comoffs">COM OFFS</div>
+                <div class="filter-tag" data-filter="BGMI">BGMI</div>
+                <div class="filter-tag" data-filter="Minecraft">MINECRAFT</div>
+                <div class="filter-tag" data-filter="Roblox">ROBLOX</div>
+                <div class="filter-tag" data-filter="Genshin">GENSHIN</div>
+            </div>
+        </div>
+
+        <!-- ROSTER -->
+        <div id="rosterSection">
+            <h1 class="roster-title">ROSTER</h1>
+
+            <!-- OWNER -->
+            <div class="tier-section">
+                <div class="tier-title">OWNER</div>
+                <div class="members-grid" id="ownerGrid"></div>
+            </div>
+
+            <!-- CO-LEADER -->
+            <div class="tier-section">
+                <div class="tier-title">CO-LEADER</div>
+                <div class="members-grid" id="coleaderGrid"></div>
+            </div>
+
+            <!-- CORE -->
+            <div class="tier-section">
+                <div class="tier-title">CORE OF S.T</div>
+                <div class="members-grid" id="coreGrid"></div>
+            </div>
+
+            <!-- COM OFFS -->
+            <div class="tier-section">
+                <div class="tier-title">COM OFFS</div>
+                <div class="members-grid" id="comoffsGrid"></div>
+            </div>
+        </div>
+
+        <!-- SOCIALS OVERLAY -->
+        <div class="overlay" id="socialsOverlay">
+            <div class="socials-grid">
+                <a href="https://discord.gg/FUDdZuMS" target="_blank" class="social-btn">
+                    JOIN DISCORD
+                </a>
+                <a href="https://t.me/STsharktooth" target="_blank" class="social-btn">
+                    JOIN TELEGRAM
+                </a>
+                <a href="https://instagram.com/Juvilius.s" target="_blank" class="social-btn">
+                    INSTAGRAM
+                </a>
+                <button class="social-btn" id="closeSocials">
+                    CLOSE
+                </button>
+            </div>
+        </div>
+
+        <!-- ABOUT OVERLAY -->
+        <div class="overlay" id="aboutOverlay">
+            <div class="about-content">
+                <button class="close-btn" id="closeAbout">&times;</button>
+                <h2 class="about-title">ABOUT S.T</h2>
+                
+                <div class="about-text">
+                    <p>Est. 2021.</p>
+                    <p>Within our territory, S.T runs everyone.</p>
+                    <p>This is primarily a gaming clan — we play games, do fun stuff, and also devour e-coms.</p>
+                    <br>
+                    <p>Two cases have been registered against our clan, 2023–2024.</p>
+                </div>
+
+                <div class="brutal-box">
+                    <div class="brutal-text">
+                        THEIR SO-CALLED 'GAMING CLAN' IS A GRAVEYARD OF FAILURES I PERSONALLY BURIED. THE LEADERS ARE COWARDS I SPAT ON AND KICKED OUT. THEY DROOL TO BE US. THEY WEEP WHEN THEY LOSE. THEY WILL BLEED WHEN WE FIND THEM. THEIR 'OWNER' IS TRASH I THREW OUT FOR BEING UNWORTHY.
+                    </div>
+                </div>
+
+                <div class="about-text" style="text-align: center; font-size: 1.4rem; color: #ff0000; font-weight: bold; text-shadow: 0 0 15px #ff0000;">
+                    WHEN WE SAY 'RESCUE', WE MEAN THE DEATH OF OPPS.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== CLAN DATA ==========
+        const clanData = {
+            owner: [{
+                id: 1,
+                name: "JUVILIUS",
+                role: "MAIN LEADER",
+                games: ["All-Games"],
+                stats: [
+                    "Minecraft: Builder, Strategist, Shadow • 6 years experience",
+                    "PUBG Global: Level 81 • Season 9 Conqueror • 11 KD • 5 Finger • Supporter",
+                    "Pokemon Unite: Gengar Main • 7z Pokemon Emblems • 4 years experience",
+                    "Chess: 800 ELO • Average • Not Regular",
+                    "Genshin Impact: Level 37 • Keqing Main • Rapid",
+                    "Roblox: Blox Fruits Master • Dead Rails Expert • Legends of Speed"
+                ],
+                isOwner: true
+            }],
+            
+            coleader: [{
+                id: 2,
+                name: "VION",
+                role: "CO-LEADER",
+                games: ["BGMI", "Minecraft", "Roblox"],
+                stats: [
+                    "BGMI: 4 Finger Claw • Supporter • Level 46",
+                    "Minecraft: 8 years experience • PvPer • Builder",
+                    "Roblox: Dead Rails"
+                ],
+                isColeader: true
+            }],
+            
+            core: [
+                {
+                    id: 3,
+                    name: "KAIZEN",
+                    role: "CORE MEMBER",
+                    games: ["BGMI", "Minecraft"],
+                    stats: [
+                        "BGMI: 4 Finger Claw • Assaulter • Level 59 • 3 KD",
+                        "Minecraft: 8 years experience • PvPer • Craftsman"
+                    ]
+                },
+                {
+                    id: 4,
+                    name: "AORXZ",
+                    role: "CORE MEMBER",
+                    games: [],
+                    stats: ["[ DATA CORRUPTED ]"],
+                    isGlitch: true
+                },
+                {
+                    id: 5,
+                    name: "SARNALI",
+                    role: "CORE MEMBER",
+                    games: ["Roblox", "Minecraft"],
+                    stats: [
+                        "Minecraft: 4 years experience • Builder",
+                        "Roblox: Grow a Garden • Scary Shawarma • Petapeta"
+                    ]
+                },
+                {
+                    id: 6,
+                    name: "BAZU",
+                    role: "CORE MEMBER",
+                    games: ["Minecraft", "BGMI"],
+                    stats: [
+                        "BGMI: Thumb Player • 6 KD • 7 years old",
+                        "Minecraft: Builder • Miner • Explorer • 6 years old",
+                        "Chess: Plays with Amy"
+                    ]
+                },
+                {
+                    id: 7,
+                    name: "AMY",
+                    role: "CORE MEMBER",
+                    games: ["Genshin", "Minecraft", "BGMI"],
+                    stats: [
+                        "Genshin Impact: Semi Pro",
+                        "Minecraft: Rookie • 1 year experience • Builder",
+                        "BGMI: Rookie • 2 Finger Claw • Level 20+ • Bronze Rank",
+                        "Call of Duty: 3 Claw • Gold Rank • Level 31"
+                    ]
+                },
+                {
+                    id: 8,
+                    name: "VAIBHAV",
+                    role: "CORE MEMBER",
+                    games: ["Minecraft"],
+                    stats: ["Stats coming soon..."]
+                },
+                {
+                    id: 9,
+                    name: "RAVE",
+                    role: "CORE MEMBER",
+                    games: ["BGMI", "Minecraft", "Roblox"],
+                    stats: [
+                        "BGMI: 5 Finger • 3 KD • Assaulter • Level 70",
+                        "Minecraft: 7 years experience • Mindplays",
+                        "Roblox: Dead Rails Expert"
+                    ]
+                },
+                {
+                    id: 10,
+                    name: "SAPROX",
+                    role: "CORE MEMBER",
+                    games: ["Genshin", "Minecraft", "Roblox"],
+                    stats: [
+                        "Call of Duty: 4 Finger Claw • Master Rank • Level 57",
+                        "Minecraft: 4 years experience • Redstone Expert • Commands Expert",
+                        "Roblox: Mainly Obbys"
+                    ]
+                },
+                {
+                    id: 11,
+                    name: "XELKI",
+                    role: "CORE MEMBER",
+                    games: ["Discord"],
+                    stats: [
+                        "Valorant: Expert",
+                        "Discord: Best of the Best Tier",
+                        "Instagram+: NC/Rdps/spc"
+                    ]
+                },
+                {
+                    id: 12,
+                    name: "UMAR",
+                    role: "CORE MEMBER",
+                    games: ["Multiple"],
+                    stats: ["Active member • Versatile gamer"]
+                }
+            ],
+            
+            comoffs: [
+                {
+                    id: 13,
+                    name: "LEDLO",
+                    role: "COMMUNICATION OFFICER",
+                    games: [],
+                    stats: ["[ DATA CORRUPTED ]"],
+                    isGlitch: true
+                },
+                {
+                    id: 14,
+                    name: "JAYANT",
+                    role: "COMMUNICATION OFFICER",
+                    games: [],
+                    stats: ["[ DATA CORRUPTED ]"],
+                    isGlitch: true
+                },
+                {
+                    id: 15,
+                    name: "RETZY",
+                    role: "COMMUNICATION OFFICER",
+                    games: [],
+                    stats: ["[ DATA CORRUPTED ]"],
+                    isGlitch: true
+                },
+                {
+                    id: 16,
+                    name: "FRITZ",
+                    role: "COMMUNICATION OFFICER",
+                    games: [],
+                    stats: ["[ DATA CORRUPTED ]"],
+                    isGlitch: true
+                },
+                {
+                    id: 17,
+                    name: "HANNAH",
+                    role: "COMMUNICATION OFFICER",
+                    games: [],
+                    stats: ["[ DATA CORRUPTED ]"],
+                    isGlitch: true
+                }
+            ]
+        };
+
+        // ========== GLOBALS ==========
+        let bloodInterval;
+        let music = document.getElementById('bgMusic');
+        let musicBtn = document.getElementById('musicBtn');
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        // ========== INITIALIZE ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            initGrid();
+            startBlood();
+            setupEventListeners();
+            renderClan();
+            initMusic();
+        });
+
+        // ========== GRID BACKGROUND ==========
+        function initGrid() {
+            const canvas = document.getElementById('gridCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = 'rgba(177, 108, 255, 0.08)';
+                ctx.lineWidth = 1;
+                
+                const size = 60;
+                
+                for (let x = 0; x < canvas.width; x += size) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, canvas.height);
+                    ctx.stroke();
+                }
+                
+                for (let y = 0; y < canvas.height; y += size) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(canvas.width, y);
+                    ctx.stroke();
+                }
+                
+                requestAnimationFrame(draw);
+            }
+            
+            resize();
+            draw();
+            window.addEventListener('resize', resize);
+        }
+
+        // ========== BLOOD RAIN ==========
+        function startBlood() {
+            bloodInterval = setInterval(() => {
+                if (Math.random() > 0.6) return;
+                
+                const blood = document.createElement('div');
+                blood.className = 'blood';
+                blood.style.left = Math.random() * window.innerWidth + 'px';
+                blood.style.height = (25 + Math.random() * 50) + 'px';
+                blood.style.animationDuration = (2 + Math.random() * 3) + 's';
+                
+                document.body.appendChild(blood);
+                
+                setTimeout(() => blood.remove(), 5000);
+            }, 400);
+        }
+
+        // ========== MUSIC SYSTEM ==========
+        function initMusic() {
+            music.volume = 0.4;
+            
+            music.addEventListener('playing', () => {
+                musicBtn.textContent = '♫';
+                musicBtn.classList.add('playing');
+            });
+            
+            music.addEventListener('pause', () => {
+                musicBtn.textContent = '♪';
+                musicBtn.classList.remove('playing');
+            });
+            
+            music.addEventListener('error', () => {
+                musicBtn.textContent = '❌';
+                musicBtn.style.color = '#ff0000';
+            });
+            
+            musicBtn.addEventListener('click', () => {
+                if (music.paused) {
+                    music.play().catch(e => {
+                        console.log('Autoplay prevented');
+                        musicBtn.textContent = '▶';
+                    });
+                } else {
+                    music.pause();
+                }
+            });
+        }
+
+        // ========== RENDER CLAN ==========
+        function renderClan() {
+            renderSection('ownerGrid', clanData.owner, 'owner');
+            renderSection('coleaderGrid', clanData.coleader, 'coleader');
+            renderSection('coreGrid', clanData.core, 'core');
+            renderSection('comoffsGrid', clanData.comoffs, 'comoffs');
+            
+            // Add expand button listeners
+            setTimeout(() => {
+                document.querySelectorAll('.expand-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const card = this.closest('.member-card');
+                        const stats = card.querySelector('.member-stats');
+                        
+                        if (stats.classList.contains('expanded')) {
+                            stats.classList.remove('expanded');
+                            card.classList.remove('expanded');
+                            this.classList.remove('active');
+                            this.textContent = '+';
+                        } else {
+                            stats.classList.add('expanded');
+                            card.classList.add('expanded');
+                            this.classList.add('active');
+                            this.textContent = '−';
+                        }
+                    });
+                });
+            }, 100);
+        }
+
+        function renderSection(gridId, members, type) {
+            const grid = document.getElementById(gridId);
+            grid.innerHTML = members.map(member => {
+                const isOwner = type === 'owner';
+                const isColeader = type === 'coleader';
+                const isGlitch = member.isGlitch;
+                const nameClass = isOwner ? 'owner-name' : isColeader ? 'coleader-name' : 'core-name';
+                
+                return `
+                    <div class="member-card ${isOwner ? 'owner' : ''} ${isGlitch ? 'glitch' : ''}" 
+                         data-name="${member.name.toLowerCase()}"
+                         data-role="${member.role.toLowerCase()}"
+                         data-type="${type}"
+                         data-games="${member.games.join(',').toLowerCase()}">
+                        <div class="member-header">
+                            <div>
+                                <div class="member-name ${nameClass}">${member.name}</div>
+                                <div class="member-role">${member.role}</div>
+                                <div class="game-tags">
+                                    ${member.games.length > 0 
+                                        ? member.games.map(game => 
+                                            `<span class="game-tag ${isGlitch ? 'error' : ''}">${game}</span>`
+                                          ).join('')
+                                        : `<span class="game-tag error">${isGlitch ? 'DATA CORRUPTED' : 'NO GAMES'}</span>`
+                                    }
+                                </div>
+                            </div>
+                            <button class="expand-btn">+</button>
+                        </div>
+                        <div class="member-stats">
+                            ${member.stats.map(stat => 
+                                `<div class="stat-item">${stat}</div>`
+                            ).join('')}
+                        </div>
+                        ${isOwner ? '<div class="hof-badge">HALL OF FAME</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ========== SEARCH & FILTER ==========
+        function setupEventListeners() {
+            // Search box
+            const searchBox = document.getElementById('searchBox');
+            const filterPopup = document.getElementById('filterPopup');
+            
+            searchBox.addEventListener('focus', () => {
+                filterPopup.classList.add('active');
+            });
+            
+            searchBox.addEventListener('input', (e) => {
+                currentSearch = e.target.value.toLowerCase();
+                filterMembers();
+            });
+            
+            // Filter tags
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                tag.addEventListener('click', function() {
+                    currentFilter = this.dataset.filter;
+                    searchBox.value = '';
+                    filterMembers();
+                    
+                    // Highlight active filter
+                    document.querySelectorAll('.filter-tag').forEach(t => t.style.background = '');
+                    this.style.background = 'rgba(177, 108, 255, 0.3)';
+                    
+                    filterPopup.classList.remove('active');
+                });
+            });
+            
+            // Click outside closes filter
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-container')) {
+                    filterPopup.classList.remove('active');
+                }
+            });
+            
+            // Navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active nav
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const section = this.dataset.section;
+                    if (section === 'roster') {
+                        document.getElementById('rosterSection').style.display = 'block';
+                        document.querySelector('.search-container').style.display = 'block';
+                        document.getElementById('socialsOverlay').classList.remove('active');
+                        document.getElementById('aboutOverlay').classList.remove('active');
+                    } else if (section === 'socials') {
+                        document.getElementById('socialsOverlay').classList.add('active');
+                    } else if (section === 'about') {
+                        document.getElementById('aboutOverlay').classList.add('active');
+                    }
+                });
+            });
+            
+            // Close buttons
+            document.getElementById('closeSocials').addEventListener('click', () => {
+                document.getElementById('socialsOverlay').classList.remove('active');
+                document.querySelector('.nav-btn[data-section="roster"]').click();
+            });
+            
+            document.getElementById('closeAbout').addEventListener('click', () => {
+                document.getElementById('aboutOverlay').classList.remove('active');
+                document.querySelector('.nav-btn[data-section="roster"]').click();
+            });
+            
+            // Enter clan
+            document.getElementById('enterBtn').addEventListener('click', enterClan);
+            
+            // Scroll animations
+            window.addEventListener('scroll', () => {
+                document.querySelectorAll('.tier-section').forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top < window.innerHeight - 100) {
+                        section.classList.add('visible');
+                    }
+                });
+            });
+            
+            // Clan logo clicks (easter egg)
+            let logoClicks = 0;
+            document.getElementById('clanLogo').addEventListener('click', () => {
+                logoClicks++;
+                if (logoClicks >= 5) {
+                    alert('SECRET PROTOCOL ACTIVATED: S.T RUNS DEEPER');
+                    logoClicks = 0;
+                }
+            });
+        }
+
+        function filterMembers() {
+            document.querySelectorAll('.member-card').forEach(card => {
+                const name = card.dataset.name;
+                const role = card.dataset.role;
+                const type = card.dataset.type;
+                const games = card.dataset.games;
+                
+                let matchesSearch = true;
+                let matchesFilter = true;
+                
+                // Search filter
+                if (currentSearch) {
+                    matchesSearch = name.includes(currentSearch) || 
+                                   role.includes(currentSearch) || 
+                                   games.includes(currentSearch);
+                }
+                
+                // Type filter
+                if (currentFilter !== 'all') {
+                    if (currentFilter === 'owner') {
+                        matchesFilter = type === 'owner';
+                    } else if (currentFilter === 'coleader') {
+                        matchesFilter = type === 'coleader';
+                    } else if (currentFilter === 'core') {
+                        matchesFilter = type === 'core';
+                    } else if (currentFilter === 'comoffs') {
+                        matchesFilter = type === 'comoffs';
+                    } else {
+                        matchesFilter = games.includes(currentFilter.toLowerCase());
+                    }
+                }
+                
+                card.style.display = (matchesSearch && matchesFilter) ? 'block' : 'none';
+            });
+        }
+
+        // ========== ENTER CLAN ==========
+        function enterClan() {
+            const enterScreen = document.getElementById('enterScreen');
+            const mainContent = document.getElementById('mainContent');
+            
+            enterScreen.style.opacity = '0';
+            enterScreen.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                enterScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                
+                // Trigger animations
+                setTimeout(() => {
+                    window.dispatchEvent(new Event('scroll'));
+                }, 200);
+                
+                // Try to play music
+                setTimeout(() => {
+                    music.play().catch(() => {
+                        musicBtn.textContent = '▶';
+                    });
+                }, 500);
+            }, 800);
+        }
+    </script>
+</body>
+</html>
