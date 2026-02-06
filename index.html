@@ -1,0 +1,1539 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.T – SHARK TOOTH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ========== BASE ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a12;
+            color: #f0f0f0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        /* ========== BLOOD ========== */
+        .blood {
+            position: fixed;
+            width: 1.2px;
+            background: linear-gradient(to bottom, rgba(255, 60, 60, 0.7), rgba(120, 0, 0, 0.3));
+            pointer-events: none;
+            z-index: 1;
+            filter: blur(0.3px);
+            animation: bloodFall linear forwards;
+            border-radius: 0 0 50% 50%;
+        }
+
+        @keyframes bloodFall {
+            to { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* ========== SCANLINES ========== */
+        .scanline {
+            position: fixed;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(150, 100, 255, 0.4), rgba(100, 200, 255, 0.4), transparent);
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.1;
+            box-shadow: 0 0 10px rgba(150, 100, 255, 0.3);
+        }
+
+        .scan1 { animation: scanDown 20s linear infinite; }
+        .scan2 { animation: scanUp 25s linear infinite; animation-delay: -10s; }
+
+        @keyframes scanDown {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        @keyframes scanUp {
+            0% { top: 100%; }
+            100% { top: 0; }
+        }
+
+        /* ========== GRID ========== */
+        #gridCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.04;
+            pointer-events: none;
+        }
+
+        /* ========== MUSIC BUTTON ========== */
+        .music-btn {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            width: 60px;
+            height: 60px;
+            background: rgba(30, 15, 60, 0.9);
+            border: 2px solid #8a6bff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.9rem;
+            color: #b19cff;
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 0 25px rgba(138, 107, 255, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .music-btn:hover {
+            background: rgba(40, 20, 80, 0.95);
+            box-shadow: 0 0 35px rgba(138, 107, 255, 0.8);
+            transform: scale(1.1);
+        }
+
+        .music-btn.playing {
+            width: 30px;
+            height: 30px;
+            font-size: 1rem;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* ========== ENTER SCREEN ========== */
+        #enterScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(ellipse at center, #0f0a1a 0%, #050510 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            gap: 35px;
+            backdrop-filter: blur(5px);
+        }
+
+        .logo {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: #ff3366;
+            text-shadow: 0 0 30px rgba(255, 51, 102, 0.7);
+            letter-spacing: 4px;
+            animation: logoGlitch 5s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes logoGlitch {
+            0%, 100% { transform: translate(0); }
+            5% { transform: translate(-2px, 1px); opacity: 0.9; }
+            10% { transform: translate(2px, -1px); }
+            15% { transform: translate(-1px, -2px); opacity: 0.95; }
+            20% { transform: translate(1px, 2px); }
+        }
+
+        .title {
+            font-size: 2.2rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, #a366ff, #66ccff, #a366ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(163, 102, 255, 0.3);
+            letter-spacing: 2px;
+            animation: titleFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .enter-btn {
+            padding: 16px 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            background: transparent;
+            color: #ff3366;
+            border: 2px solid #ff3366;
+            border-radius: 8px;
+            cursor: pointer;
+            letter-spacing: 1.5px;
+            margin-top: 40px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.4);
+        }
+
+        .enter-btn:hover {
+            background: rgba(255, 51, 102, 0.1);
+            box-shadow: 0 0 30px rgba(255, 51, 102, 0.7);
+            transform: scale(1.05);
+            letter-spacing: 2px;
+        }
+
+        .tagline {
+            position: absolute;
+            bottom: 40px;
+            color: #666;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        #mainContent {
+            display: none;
+            padding-top: 100px;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* ========== NAVIGATION ========== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 10, 25, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 20px 0;
+            z-index: 800;
+            border-bottom: 1px solid rgba(138, 107, 255, 0.3);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: #a366ff;
+            padding: 12px 28px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 6px;
+            position: relative;
+        }
+
+        .nav-btn:hover {
+            color: #66ccff;
+            background: rgba(102, 204, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active {
+            color: #66ccff;
+            background: rgba(102, 204, 255, 0.15);
+            box-shadow: 0 0 15px rgba(102, 204, 255, 0.3);
+        }
+
+        /* ========== SEARCH ========== */
+        .search-container {
+            position: fixed;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 700;
+            width: 90%;
+            max-width: 650px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 16px 25px;
+            background: rgba(20, 15, 35, 0.9);
+            border: 1.5px solid rgba(138, 107, 255, 0.5);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+            outline: none;
+            border-radius: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-box:focus {
+            border-color: #66ccff;
+            box-shadow: 0 0 30px rgba(102, 204, 255, 0.4);
+        }
+
+        .search-box::placeholder {
+            color: #888;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-popup {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(25, 20, 40, 0.98);
+            border: 1.5px solid rgba(138, 107, 255, 0.5);
+            border-top: none;
+            padding: 20px;
+            margin-top: 5px;
+            border-radius: 0 0 10px 10px;
+            z-index: 1000;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+        }
+
+        .filter-popup.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 12px;
+            animation: popupIn 0.3s ease;
+        }
+
+        @keyframes popupIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .filter-tag {
+            padding: 10px;
+            background: rgba(138, 107, 255, 0.1);
+            border: 1px solid rgba(138, 107, 255, 0.3);
+            color: #a366ff;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .filter-tag:hover {
+            background: rgba(138, 107, 255, 0.2);
+            border-color: #a366ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(163, 102, 255, 0.3);
+        }
+
+        /* ========== ROSTER TITLE ========== */
+        .roster-title {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin: 70px 0 50px;
+            color: #66ccff;
+            text-shadow: 0 0 25px rgba(102, 204, 255, 0.5);
+            letter-spacing: 3px;
+            position: relative;
+        }
+
+        .roster-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff3366, transparent);
+            border-radius: 3px;
+        }
+
+        /* ========== TIER SECTIONS ========== */
+        .tier-section {
+            max-width: 1300px;
+            margin: 80px auto;
+            padding: 0 30px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .tier-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tier-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ff3366;
+            margin-bottom: 35px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(255, 51, 102, 0.5);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        .tier-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100px;
+            height: 2px;
+            background: #ff3366;
+            border-radius: 2px;
+        }
+
+        /* ========== MEMBER GRID ========== */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* ========== MEMBER CARD ========== */
+        .member-card {
+            background: rgba(25, 20, 40, 0.9);
+            border: 1px solid rgba(138, 107, 255, 0.3);
+            border-radius: 12px 12px 12px 12px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 0 100%);
+        }
+
+        /* 3 EDGES ROUNDED, 1 CUT */
+        .member-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 15px;
+            height: 15px;
+            background: #ff3366;
+            clip-path: polygon(0 0, 100% 0, 100% 100%);
+            opacity: 0.3;
+        }
+
+        .member-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(102, 204, 255, 0.5);
+            box-shadow: 0 15px 40px rgba(102, 204, 255, 0.2);
+        }
+
+        .member-card:hover::before {
+            opacity: 0.6;
+            animation: cutGlow 1s infinite;
+        }
+
+        @keyframes cutGlow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.9; }
+        }
+
+        /* GLITCH CARD */
+        .member-card.glitch {
+            border-color: rgba(255, 51, 102, 0.4);
+            animation: glitchEffect 3s infinite;
+        }
+
+        @keyframes glitchEffect {
+            0%, 100% { transform: translate(0); filter: hue-rotate(0); }
+            2% { transform: translate(-1px, 1px); filter: hue-rotate(30deg); }
+            4% { transform: translate(1px, -1px); }
+            6% { transform: translate(-1px, -1px); filter: hue-rotate(60deg); }
+            8% { transform: translate(1px, 1px); }
+            10% { transform: translate(0); filter: hue-rotate(0); }
+        }
+
+        /* OWNER CARD */
+        .member-card.owner {
+            background: rgba(40, 20, 30, 0.9);
+            border-color: rgba(255, 140, 0, 0.4);
+        }
+
+        .member-card.owner:hover {
+            border-color: rgba(255, 140, 0, 0.6);
+            box-shadow: 0 15px 40px rgba(255, 140, 0, 0.2);
+        }
+
+        /* EXPANDED STATE */
+        .member-card.expanded {
+            background: rgba(30, 25, 45, 0.95);
+            border-color: rgba(102, 204, 255, 0.6);
+            box-shadow: 0 10px 35px rgba(102, 204, 255, 0.3);
+        }
+
+        /* ========== MEMBER NAME GLOWS ========== */
+        .member-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        /* OWNER: Orange → White */
+        .owner-name {
+            color: #ff8c00;
+            animation: ownerGlow 2s infinite;
+        }
+
+        @keyframes ownerGlow {
+            0%, 100% { 
+                color: #ff8c00; 
+                text-shadow: 0 0 10px rgba(255, 140, 0, 0.5); 
+            }
+            50% { 
+                color: #fff; 
+                text-shadow: 0 0 15px rgba(255, 255, 255, 0.7); 
+            }
+        }
+
+        /* CO-LEADER: Brown → White */
+        .coleader-name {
+            color: #cd853f;
+            animation: coleaderGlow 2.5s infinite;
+        }
+
+        @keyframes coleaderGlow {
+            0%, 100% { 
+                color: #cd853f; 
+                text-shadow: 0 0 10px rgba(205, 133, 63, 0.5); 
+            }
+            50% { 
+                color: #fff; 
+                text-shadow: 0 0 15px rgba(255, 255, 255, 0.7); 
+            }
+        }
+
+        /* CORE: Cyan → Grey → White → Black → Red */
+        .core-name {
+            animation: coreGlow 6s infinite;
+        }
+
+        @keyframes coreGlow {
+            0% { color: #66ccff; text-shadow: 0 0 10px rgba(102, 204, 255, 0.5); }
+            20% { color: #aaa; text-shadow: 0 0 10px rgba(170, 170, 170, 0.5); }
+            40% { color: #fff; text-shadow: 0 0 15px rgba(255, 255, 255, 0.7); }
+            60% { color: #222; text-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
+            80% { color: #ff3366; text-shadow: 0 0 10px rgba(255, 51, 102, 0.5); }
+            100% { color: #66ccff; text-shadow: 0 0 10px rgba(102, 204, 255, 0.5); }
+        }
+
+        /* ========== ROLE & GAME TAGS ========== */
+        .member-role {
+            color: #b19cff;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .game-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .game-tag {
+            background: rgba(138, 107, 255, 0.15);
+            color: #b19cff;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid rgba(138, 107, 255, 0.3);
+            transition: all 0.2s;
+            letter-spacing: 0.5px;
+        }
+
+        .game-tag:hover {
+            background: rgba(138, 107, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(138, 107, 255, 0.3);
+        }
+
+        .game-tag.error {
+            background: rgba(255, 51, 102, 0.15);
+            color: #ff6680;
+            border-color: rgba(255, 51, 102, 0.4);
+        }
+
+        /* ========== EXPAND BUTTON ========== */
+        .expand-btn {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 30px;
+            height: 30px;
+            background: transparent;
+            border: 1.5px solid rgba(138, 107, 255, 0.5);
+            color: #b19cff;
+            font-size: 1.2rem;
+            font-weight: 300;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            border-radius: 6px;
+            z-index: 10;
+        }
+
+        .expand-btn:hover {
+            background: rgba(138, 107, 255, 0.15);
+            border-color: #b19cff;
+            transform: rotate(90deg);
+        }
+
+        .expand-btn.active {
+            background: rgba(255, 140, 0, 0.15);
+            border-color: #ff8c00;
+            color: #ff8c00;
+            transform: rotate(45deg);
+        }
+
+        /* ========== HALL OF FAME ========== */
+        .hof-badge {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #ff3366;
+            text-shadow: 0 0 10px rgba(255, 51, 102, 0.5);
+            animation: hofPulse 2s infinite;
+            letter-spacing: 1px;
+            z-index: 5;
+        }
+
+        @keyframes hofPulse {
+            0%, 100% { 
+                color: #ff3366; 
+                text-shadow: 0 0 10px rgba(255, 51, 102, 0.5); 
+            }
+            50% { 
+                color: #fff; 
+                text-shadow: 0 0 15px #fff, 0 0 25px rgba(255, 51, 102, 0.7); 
+            }
+        }
+
+        /* ========== STATS ========== */
+        .member-stats {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            border-top: 1px solid rgba(138, 107, 255, 0.2);
+            margin-top: 20px;
+        }
+
+        .member-stats.expanded {
+            max-height: 800px;
+            padding-top: 20px;
+        }
+
+        .stat-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid rgba(138, 107, 255, 0.5);
+            border-radius: 0 6px 6px 0;
+            transition: all 0.3s;
+        }
+
+        .stat-item:hover {
+            border-left-color: #66ccff;
+            background: rgba(102, 204, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        /* ========== SOCIALS OVERLAY ========== */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(10, 5, 20, 0.98);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(25px);
+        }
+
+        .overlay.active {
+            display: flex;
+            animation: overlayIn 0.4s ease;
+        }
+
+        @keyframes overlayIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .socials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 50px;
+            max-width: 800px;
+            width: 90%;
+        }
+
+        .social-btn {
+            background: rgba(30, 20, 50, 0.9);
+            border: 1.5px solid rgba(138, 107, 255, 0.5);
+            padding: 28px 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #66ccff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.4s;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .social-btn:hover {
+            border-color: #66ccff;
+            background: rgba(102, 204, 255, 0.1);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(102, 204, 255, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: transparent;
+            border: none;
+            color: #a366ff;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close-btn:hover {
+            color: #ff3366;
+            background: rgba(255, 51, 102, 0.1);
+            transform: rotate(90deg);
+        }
+
+        /* ========== ABOUT OVERLAY ========== */
+        .about-content {
+            max-width: 700px;
+            padding: 50px;
+            background: rgba(25, 20, 40, 0.95);
+            border: 1.5px solid rgba(138, 107, 255, 0.3);
+            border-radius: 15px;
+            position: relative;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .about-title {
+            color: #66ccff;
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+        }
+
+        .about-text {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            color: #ddd;
+            text-align: center;
+        }
+
+        .clan-status-box {
+            background: rgba(20, 15, 35, 0.8);
+            border: 1px solid rgba(80, 200, 120, 0.3);
+            padding: 15px;
+            margin: 30px 0;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .status-label {
+            color: #50c878;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .status-value {
+            color: #a0e0b0;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .diss-text {
+            background: rgba(255, 51, 102, 0.1);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            padding: 20px;
+            margin: 40px 0;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .diss-text::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff3366, transparent);
+        }
+
+        .diss-text p {
+            color: #ff6680;
+            font-size: 1rem;
+            line-height: 1.6;
+            text-align: center;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .brutal-text {
+            color: #ff3366;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 40px;
+            text-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
+            letter-spacing: 1px;
+            line-height: 1.5;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .logo { font-size: 3rem; }
+            .title { font-size: 1.8rem; }
+            .roster-title { font-size: 2.2rem; }
+            .members-grid { grid-template-columns: 1fr; }
+            .tier-section { padding: 0 20px; }
+            .tier-title { font-size: 1.6rem; }
+            .member-name { font-size: 1.3rem; }
+            .music-btn { width: 50px; height: 50px; font-size: 1.6rem; }
+            .music-btn.playing { width: 28px; height: 28px; font-size: 0.9rem; }
+            .search-container { top: 85px; }
+            .socials-grid { grid-template-columns: 1fr; padding: 30px; }
+            nav { gap: 15px; padding: 18px 0; }
+            .nav-btn { padding: 10px 20px; font-size: 0.9rem; }
+            .about-content { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCANLINES -->
+    <div class="scanline scan1"></div>
+    <div class="scanline scan2"></div>
+
+    <!-- GRID -->
+    <canvas id="gridCanvas"></canvas>
+
+    <!-- MUSIC -->
+    <div class="music-btn" id="musicBtn">♪</div>
+    <audio id="bgMusic" loop preload="auto">
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ENTER -->
+    <div id="enterScreen">
+        <div class="logo" id="clanLogo">S.T</div>
+        <div class="title">SHARK TOOTH</div>
+        <button class="enter-btn" id="enterBtn">ENTER CLAN</button>
+        <div class="tagline">BLACK • PURPLE • BLOOD</div>
+    </div>
+
+    <!-- MAIN -->
+    <div id="mainContent">
+        <!-- NAV -->
+        <nav>
+            <button class="nav-btn active" data-section="roster">ROSTER</button>
+            <button class="nav-btn" data-section="socials">SOCIALS</button>
+            <button class="nav-btn" data-section="about">ABOUT</button>
+        </nav>
+
+        <!-- SEARCH -->
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchBox" placeholder="Search members by name, role, or game..." autocomplete="off">
+            <div class="filter-popup" id="filterPopup">
+                <div class="filter-tag" data-filter="all">ALL</div>
+                <div class="filter-tag" data-filter="owner">OWNER</div>
+                <div class="filter-tag" data-filter="coleader">CO-LEADER</div>
+                <div class="filter-tag" data-filter="core">CORE</div>
+                <div class="filter-tag" data-filter="comoffs">COM OFFS</div>
+                <div class="filter-tag" data-filter="BGMI">BGMI</div>
+                <div class="filter-tag" data-filter="Minecraft">MINECRAFT</div>
+                <div class="filter-tag" data-filter="Roblox">ROBLOX</div>
+                <div class="filter-tag" data-filter="Genshin">GENSHIN</div>
+            </div>
+        </div>
+
+        <!-- ROSTER -->
+        <div id="rosterSection">
+            <h1 class="roster-title">ROSTER</h1>
+
+            <!-- OWNER -->
+            <div class="tier-section">
+                <div class="tier-title">OWNER</div>
+                <div class="members-grid" id="ownerGrid"></div>
+            </div>
+
+            <!-- CO-LEADER -->
+            <div class="tier-section">
+                <div class="tier-title">CO-LEADER</div>
+                <div class="members-grid" id="coleaderGrid"></div>
+            </div>
+
+            <!-- CORE -->
+            <div class="tier-section">
+                <div class="tier-title">CORE OF S.T</div>
+                <div class="members-grid" id="coreGrid"></div>
+            </div>
+
+            <!-- COM OFFS -->
+            <div class="tier-section">
+                <div class="tier-title">COM OFFS</div>
+                <div class="members-grid" id="comoffsGrid"></div>
+            </div>
+        </div>
+
+        <!-- SOCIALS -->
+        <div class="overlay" id="socialsOverlay">
+            <div class="socials-grid">
+                <a href="https://discord.gg/FUDdZuMS" target="_blank" class="social-btn">JOIN DISCORD</a>
+                <a href="https://t.me/STsharktooth" target="_blank" class="social-btn">JOIN TELEGRAM</a>
+                <a href="https://instagram.com/Juvilius.s" target="_blank" class="social-btn">INSTAGRAM</a>
+                <button class="social-btn" id="closeSocials">CLOSE</button>
+            </div>
+        </div>
+
+        <!-- ABOUT -->
+        <div class="overlay" id="aboutOverlay">
+            <div class="about-content">
+                <button class="close-btn" id="closeAbout">&times;</button>
+                <h2 class="about-title">ABOUT S.T</h2>
+                
+                <div class="about-text">
+                    Est. 2021. Within our territory, S.T runs everyone.<br>
+                    This is primarily a gaming clan — we play games, do fun stuff, and also devour e-coms.
+                </div>
+
+                <div class="clan-status-box">
+                    <div class="status-label">CLAN STATUS</div>
+                    <div class="status-value">ACTIVE & DOMINANT</div>
+                </div>
+
+                <div class="about-text">
+                    Two cases have been registered against our clan, 2023–2024.
+                </div>
+
+                <div class="diss-text">
+                    <p>
+                        Their so-called 'gaming clan' is a graveyard of failures I personally buried. 
+                        The leaders are cowards I spat on and kicked out. They drool to be us. 
+                        They weep when they lose. They will bleed when we find them. 
+                        Their 'owner' is trash I threw out for being unworthy.
+                    </p>
+                </div>
+
+                <div class="brutal-text">
+                    WHEN WE SAY 'RESCUE', WE MEAN THE DEATH OF OPPS.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== CLAN DATA ==========
+        const clanData = {
+            owner: [{
+                id: 1,
+                name: "JUVILIUS",
+                role: "MAIN LEADER",
+                games: ["All-Games"],
+                stats: [
+                    "Minecraft: Builder, Strategist, Shadow • 6 years experience",
+                    "PUBG Global: Level 81 • Season 9 Conqueror • 11 KD • 5 Finger • Supporter",
+                    "Pokemon Unite: Gengar Main • 7z Pokemon Emblems • 4 years experience",
+                    "Chess: 800 ELO • Average • Not Regular",
+                    "Genshin Impact: Level 37 • Keqing Main • Rapid",
+                    "Roblox: Blox Fruits Master • Dead Rails Expert • Legends of Speed"
+                ],
+                isOwner: true
+            }],
+            
+            coleader: [{
+                id: 2,
+                name: "VION",
+                role: "CO-LEADER",
+                games: ["BGMI", "Minecraft", "Roblox"],
+                stats: [
+                    "BGMI: 4 Finger Claw • Supporter • Level 46",
+                    "Minecraft: 8 years experience • PvPer • Builder",
+                    "Roblox: Dead Rails"
+                ],
+                isColeader: true
+            }],
+            
+            core: [
+                {
+                    id: 3,
+                    name: "KAIZEN",
+                    role: "CORE MEMBER",
+                    games: ["BGMI", "Minecraft"],
+                    stats: [
+                        "BGMI: 4 Finger Claw • Assaulter • Level 59 • 3 KD",
+                        "Minecraft: 8 years experience • PvPer • Craftsman"
+                    ]
+                },
+                {
+                    id: 4,
+                    name: "AORXZ",
+                    role: "CORE MEMBER",
+                    games: [],
+                    stats: ["[ DATA CORRUPTED ]"],
+                    isGlitch: true
+                },
+                {
+                    id: 5,
+                    name: "SARNALI",
+                    role: "CORE MEMBER",
+                    games: ["Roblox", "Minecraft"],
+                    stats: [
+                        "Minecraft: 4 years experience • Builder",
+                        "Roblox: Grow a Garden • Scary Shawarma • Petapeta"
+                    ]
+                },
+                {
+                    id: 6,
+                    name: "BAZU",
+                    role: "CORE MEMBER",
+                    games: ["Minecraft", "BGMI"],
+                    stats: [
+                        "BGMI: Thumb Player • 6 KD • 7 years old",
+                        "Minecraft: Builder • Miner • Explorer • 6 years old",
+                        "Chess: Plays with Amy"
+                    ]
+                },
+                {
+                    id: 7,
+                    name: "AMY",
+                    role: "CORE MEMBER",
+                    games: ["Genshin", "Minecraft", "BGMI"],
+                    stats: [
+                        "Genshin Impact: Semi Pro",
+                        "Minecraft: Rookie • 1 year experience • Builder",
+                        "BGMI: Rookie • 2 Finger Claw • Level 20+ • Bronze Rank",
+                        "Call of Duty: 3 Claw • Gold Rank • Level 31"
+                    ]
+                },
+                {
+                    id: 8,
+                    name: "VAIBHAV",
+                    role: "CORE MEMBER",
+                    games: ["Minecraft"],
+                    stats: ["Stats coming soon..."]
+                },
+                {
+                    id: 9,
+                    name: "RAVE",
+                    role: "CORE MEMBER",
+                    games: ["BGMI", "Minecraft", "Roblox"],
+                    stats: [
+                        "BGMI: 5 Finger • 3 KD • Assaulter • Level 70",
+                        "Minecraft: 7 years experience • Mindplays",
+                        "Roblox: Dead Rails Expert"
+                    ]
+                },
+                {
+                    id: 10,
+                    name: "SAPROX",
+                    role: "CORE MEMBER",
+                    games: ["Genshin", "Minecraft", "Roblox"],
+                    stats: [
+                        "Call of Duty: 4 Finger Claw • Master Rank • Level 57",
+                        "Minecraft: 4 years experience • Redstone Expert • Commands Expert",
+                        "Roblox: Mainly Obbys"
+                    ]
+                },
+                {
+                    id: 11,
+                    name: "XELKI",
+                    role: "CORE MEMBER",
+                    games: ["Discord"],
+                    stats: [
+                        "Valorant: Expert",
+                        "Discord: Best of the Best Tier",
+                        "Instagram+: NC/Rdps/spc"
+                    ]
+                },
+                {
+                    id: 12,
+                    name: "UMAR",
+                    role: "CORE MEMBER",
+                    games: ["Multiple"],
+                    stats: ["Active member • Versatile gamer"]
+                }
+            ],
+            
+            comoffs: [
+                {
+                    id: 13,
+                    name: "LEDLO",
+                    role: "COMMUNICATION OFFICER",
+                    games: [],
+                    stats: ["[ DATA CORRUPTED ]"],
+                    isGlitch: true
+                },
+                {
+                    id: 14,
+                    name: "JAYANT",
+                    role: "COMMUNICATION OFFICER",
+                    games: [],
+                    stats: ["[ DATA CORRUPTED ]"],
+                    isGlitch: true
+                },
+                {
+                    id: 15,
+                    name: "RETZY",
+                    role: "COMMUNICATION OFFICER",
+                    games: [],
+                    stats: ["[ DATA CORRUPTED ]"],
+                    isGlitch: true
+                },
+                {
+                    id: 16,
+                    name: "FRITZ",
+                    role: "COMMUNICATION OFFICER",
+                    games: [],
+                    stats: ["[ DATA CORRUPTED ]"],
+                    isGlitch: true
+                },
+                {
+                    id: 17,
+                    name: "HANNAH",
+                    role: "COMMUNICATION OFFICER",
+                    games: [],
+                    stats: ["[ DATA CORRUPTED ]"],
+                    isGlitch: true
+                }
+            ]
+        };
+
+        // ========== GLOBALS ==========
+        let bloodInterval;
+        let music = document.getElementById('bgMusic');
+        let musicBtn = document.getElementById('musicBtn');
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        // ========== INIT ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            initGrid();
+            startBlood();
+            setupEventListeners();
+            renderClan();
+            initMusic();
+            
+            // Trigger scroll animations
+            setTimeout(() => {
+                window.dispatchEvent(new Event('scroll'));
+            }, 500);
+        });
+
+        // ========== GRID ==========
+        function initGrid() {
+            const canvas = document.getElementById('gridCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = 'rgba(120, 90, 255, 0.05)';
+                ctx.lineWidth = 1;
+                
+                const size = 70;
+                
+                // Vertical lines
+                for (let x = 0; x < canvas.width; x += size) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, canvas.height);
+                    ctx.stroke();
+                }
+                
+                // Horizontal lines
+                for (let y = 0; y < canvas.height; y += size) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(canvas.width, y);
+                    ctx.stroke();
+                }
+                
+                requestAnimationFrame(draw);
+            }
+            
+            resize();
+            draw();
+            window.addEventListener('resize', resize);
+        }
+
+        // ========== BLOOD ==========
+        function startBlood() {
+            bloodInterval = setInterval(() => {
+                if (Math.random() > 0.5) return;
+                
+                const blood = document.createElement('div');
+                blood.className = 'blood';
+                blood.style.left = Math.random() * window.innerWidth + 'px';
+                blood.style.height = (20 + Math.random() * 40) + 'px';
+                blood.style.animationDuration = (3 + Math.random() * 3) + 's';
+                
+                document.body.appendChild(blood);
+                
+                setTimeout(() => blood.remove(), 6000);
+            }, 500);
+        }
+
+        // ========== MUSIC ==========
+        function initMusic() {
+            music.volume = 0.4;
+            
+            music.addEventListener('playing', () => {
+                musicBtn.textContent = '♫';
+                musicBtn.classList.add('playing');
+            });
+            
+            music.addEventListener('pause', () => {
+                musicBtn.textContent = '♪';
+                musicBtn.classList.remove('playing');
+            });
+            
+            musicBtn.addEventListener('click', () => {
+                if (music.paused) {
+                    music.play().catch(e => {
+                        console.log('Autoplay prevented');
+                        musicBtn.textContent = '▶';
+                    });
+                } else {
+                    music.pause();
+                }
+            });
+        }
+
+        // ========== RENDER CLAN ==========
+        function renderClan() {
+            renderSection('ownerGrid', clanData.owner, 'owner');
+            renderSection('coleaderGrid', clanData.coleader, 'coleader');
+            renderSection('coreGrid', clanData.core, 'core');
+            renderSection('comoffsGrid', clanData.comoffs, 'comoffs');
+            
+            // Add expand button listeners
+            setTimeout(() => {
+                document.querySelectorAll('.expand-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const card = this.closest('.member-card');
+                        const stats = card.querySelector('.member-stats');
+                        
+                        if (stats.classList.contains('expanded')) {
+                            stats.classList.remove('expanded');
+                            card.classList.remove('expanded');
+                            this.classList.remove('active');
+                            this.textContent = '+';
+                        } else {
+                            stats.classList.add('expanded');
+                            card.classList.add('expanded');
+                            this.classList.add('active');
+                            this.textContent = '−';
+                            
+                            // Blood effect on expand
+                            createBloodClick(card);
+                        }
+                    });
+                });
+            }, 100);
+        }
+
+        function renderSection(gridId, members, type) {
+            const grid = document.getElementById(gridId);
+            grid.innerHTML = members.map(member => {
+                const isOwner = type === 'owner';
+                const isColeader = type === 'coleader';
+                const isGlitch = member.isGlitch;
+                const nameClass = isOwner ? 'owner-name' : isColeader ? 'coleader-name' : 'core-name';
+                
+                return `
+                    <div class="member-card ${isOwner ? 'owner' : ''} ${isGlitch ? 'glitch' : ''}" 
+                         data-name="${member.name.toLowerCase()}"
+                         data-role="${member.role.toLowerCase()}"
+                         data-type="${type}"
+                         data-games="${member.games.join(',').toLowerCase()}">
+                        <div class="member-header">
+                            <div>
+                                <div class="member-name ${nameClass}">${member.name}</div>
+                                <div class="member-role">${member.role}</div>
+                                <div class="game-tags">
+                                    ${member.games.length > 0 
+                                        ? member.games.map(game => 
+                                            `<span class="game-tag ${isGlitch ? 'error' : ''}">${game}</span>`
+                                          ).join('')
+                                        : `<span class="game-tag error">${isGlitch ? 'DATA CORRUPTED' : 'NO GAMES'}</span>`
+                                    }
+                                </div>
+                            </div>
+                            <button class="expand-btn">+</button>
+                        </div>
+                        <div class="member-stats">
+                            ${member.stats.map(stat => 
+                                `<div class="stat-item">${stat}</div>`
+                            ).join('')}
+                        </div>
+                        ${isOwner ? '<div class="hof-badge">HALL OF FAME</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ========== BLOOD CLICK ==========
+        function createBloodClick(element) {
+            const rect = element.getBoundingClientRect();
+            
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const blood = document.createElement('div');
+                    blood.className = 'blood';
+                    blood.style.left = (rect.left + Math.random() * rect.width) + 'px';
+                    blood.style.top = (rect.top + Math.random() * rect.height) + 'px';
+                    blood.style.height = (10 + Math.random() * 20) + 'px';
+                    blood.style.animationDuration = '1s';
+                    
+                    document.body.appendChild(blood);
+                    
+                    setTimeout(() => blood.remove(), 1000);
+                }, i * 100);
+            }
+        }
+
+        // ========== SEARCH & FILTER ==========
+        function setupEventListeners() {
+            // Search box
+            const searchBox = document.getElementById('searchBox');
+            const filterPopup = document.getElementById('filterPopup');
+            
+            searchBox.addEventListener('focus', () => {
+                filterPopup.classList.add('active');
+            });
+            
+            searchBox.addEventListener('input', (e) => {
+                currentSearch = e.target.value.toLowerCase();
+                filterMembers();
+            });
+            
+            // Filter tags
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                tag.addEventListener('click', function() {
+                    currentFilter = this.dataset.filter;
+                    searchBox.value = '';
+                    filterMembers();
+                    
+                    // Highlight active filter
+                    document.querySelectorAll('.filter-tag').forEach(t => {
+                        t.style.background = '';
+                        t.style.borderColor = '';
+                    });
+                    this.style.background = 'rgba(138, 107, 255, 0.2)';
+                    this.style.borderColor = '#a366ff';
+                    
+                    filterPopup.classList.remove('active');
+                });
+            });
+            
+            // Click outside closes filter
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-container')) {
+                    filterPopup.classList.remove('active');
+                }
+            });
+            
+            // Navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active nav
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const section = this.dataset.section;
+                    if (section === 'roster') {
+                        document.getElementById('rosterSection').style.display = 'block';
+                        document.querySelector('.search-container').style.display = 'block';
+                        document.getElementById('socialsOverlay').classList.remove('active');
+                        document.getElementById('aboutOverlay').classList.remove('active');
+                    } else if (section === 'socials') {
+                        document.getElementById('socialsOverlay').classList.add('active');
+                        document.getElementById('rosterSection').style.display = 'none';
+                        document.querySelector('.search-container').style.display = 'none';
+                    } else if (section === 'about') {
+                        document.getElementById('aboutOverlay').classList.add('active');
+                        document.getElementById('rosterSection').style.display = 'none';
+                        document.querySelector('.search-container').style.display = 'none';
+                    }
+                });
+            });
+            
+            // Close buttons
+            document.getElementById('closeSocials').addEventListener('click', () => {
+                document.getElementById('socialsOverlay').classList.remove('active');
+                document.querySelector('.nav-btn[data-section="roster"]').click();
+            });
+            
+            document.getElementById('closeAbout').addEventListener('click', () => {
+                document.getElementById('aboutOverlay').classList.remove('active');
+                document.querySelector('.nav-btn[data-section="roster"]').click();
+            });
+            
+            // Enter clan
+            document.getElementById('enterBtn').addEventListener('click', enterClan);
+            
+            // Scroll animations
+            window.addEventListener('scroll', () => {
+                document.querySelectorAll('.tier-section').forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top < window.innerHeight - 100) {
+                        section.classList.add('visible');
+                    }
+                });
+            });
+            
+            // Clan logo clicks
+            let logoClicks = 0;
+            document.getElementById('clanLogo').addEventListener('click', () => {
+                logoClicks++;
+                
+                // Visual feedback
+                const logo = document.getElementById('clanLogo');
+                logo.style.transform = 'scale(1.1)';
+                setTimeout(() => logo.style.transform = '', 200);
+                
+                if (logoClicks >= 5) {
+                    alert('SECRET: S.T RUNS DEEPER THAN BLOOD');
+                    logoClicks = 0;
+                }
+            });
+        }
+
+        function filterMembers() {
+            document.querySelectorAll('.member-card').forEach(card => {
+                const name = card.dataset.name;
+                const role = card.dataset.role;
+                const type = card.dataset.type;
+                const games = card.dataset.games;
+                
+                let matchesSearch = true;
+                let matchesFilter = true;
+                
+                // Search filter
+                if (currentSearch) {
+                    matchesSearch = name.includes(currentSearch) || 
+                                   role.includes(currentSearch) || 
+                                   games.includes(currentSearch);
+                }
+                
+                // Type filter
+                if (currentFilter !== 'all') {
+                    if (currentFilter === 'owner') {
+                        matchesFilter = type === 'owner';
+                    } else if (currentFilter === 'coleader') {
+                        matchesFilter = type === 'coleader';
+                    } else if (currentFilter === 'core') {
+                        matchesFilter = type === 'core';
+                    } else if (currentFilter === 'comoffs') {
+                        matchesFilter = type === 'comoffs';
+                    } else {
+                        matchesFilter = games.includes(currentFilter.toLowerCase());
+                    }
+                }
+                
+                card.style.display = (matchesSearch && matchesFilter) ? 'block' : 'none';
+                
+                // Animation on show
+                if (matchesSearch && matchesFilter) {
+                    card.style.animation = 'none';
+                    setTimeout(() => {
+                        card.style.animation = '';
+                    }, 10);
+                }
+            });
+        }
+
+        // ========== ENTER CLAN ==========
+        function enterClan() {
+            const enterScreen = document.getElementById('enterScreen');
+            const mainContent = document.getElementById('mainContent');
+            
+            enterScreen.style.opacity = '0';
+            enterScreen.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                enterScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                
+                // Trigger animations
+                setTimeout(() => {
+                    window.dispatchEvent(new Event('scroll'));
+                }, 200);
+                
+                // Try to play music
+                setTimeout(() => {
+                    music.play().catch(() => {
+                        musicBtn.textContent = '▶';
+                    });
+                }, 500);
+            }, 800);
+        }
+    </script>
+</body>
+</html>
