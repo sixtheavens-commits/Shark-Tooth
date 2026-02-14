@@ -4,14 +4,14 @@
 const shopData = {
     vionShop: [
         {
-            name: "Instagram account",
-            price: "3$/250₹",
-            description: "Selling accounts created way back then 2012-2018 created accounts",
+            name: "instagram old accounts, instagram followers, unc",
+            price: "cheap",
+            description: "Contact Whatsapp - [+84 52 248 1751]",
             available: true
         {
-            name: "Accounts Hits",
-            price: "10-20₹",
-            description: "Only account hits not account, you have to create the account by yourself",
+            name: "international number",
+            price: "cheap",
+            description: "Contact Whatsapp - [+84 52 248 1751]",
             available: true
  },
 
