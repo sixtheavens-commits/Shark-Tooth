@@ -4,76 +4,30 @@
 const shopData = {
     vionShop: [
         {
-            name: "Premium Gaming Setup Guide",
-            price: "Free",
-            description: "Complete guide to building the perfect gaming setup",
+            name: "Instagram account",
+            price: "3$/250₹",
+            description: "Selling accounts created way back then 2012-2018 created accounts",
             available: true
-        },
         {
-            name: "Minecraft Build Tutorials",
-            price: "$5",
-            description: "Learn advanced building techniques from Vion",
+            name: "Accounts Hits",
+            price: "10-20₹",
+            description: "Only account hits not account, you have to create the account by yourself",
             available: true
-        },
-        {
-            name: "Custom Roblox Scripts Pack",
-            price: "$10",
-            description: "Exclusive scripts for Blox Fruits - Gravity User special",
-            available: true
-        },
-        {
-            name: "Pokemon Unite Strategy Guide",
-            price: "$3",
-            description: "Master the meta and dominate ranked matches",
-            available: true
-        },
-        {
-            name: "1-on-1 Mining Tutorial",
-            price: "$8/session",
-            description: "Personal Minecraft mining coaching with Vion",
-            available: false
-        }
-    ],
+ },
+
+        
+],
     
     juviliusShop: [
         {
-            name: "PUBG Pro Tips & Tricks",
-            price: "Free",
-            description: "Master the battlefield with expert strategies from a Season 9 Conqueror",
+            name: "Discord Selfbot",
+            price: "2$",
+            description: "Discord Selfbot eith Ai, beefing toolsz raiding tools, nuke tools, sutomation, utility and fun features all in one selfbot",
             available: true
         },
-        {
-            name: "Pokemon Unite Battle Guide",
-            price: "$3",
-            description: "Gengar main techniques - Learn from 4 years experience",
-            available: true
-        },
-        {
-            name: "S.T Exclusive Merchandise",
-            price: "$15",
-            description: "Limited edition clan merch - Hoodies and T-shirts",
-            available: true
-        },
-        {
-            name: "1-on-1 Gaming Coaching",
-            price: "$20/hr",
-            description: "Personal coaching session with Juvilius - All games",
-            available: true
-        },
-        {
-            name: "Chess Strategy Course",
-            price: "$5",
-            description: "Learn chess basics to 800 ELO level",
-            available: true
-        },
-        {
-            name: "Genshin Impact Account Boost",
-            price: "$25",
-            description: "Level boosting service - Fast and safe",
-            available: false
-        }
-    ]
-};
+        
+ Guide",
+
 
 // ==========================================
 // HOW TO ADD/EDIT SHOP ITEMS:
