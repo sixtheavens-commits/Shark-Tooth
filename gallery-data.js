@@ -8,7 +8,7 @@ const galleryData = [
         title: "Epic Gaming Fail #1"
     },
     {
-        image: "https://imgur.com/a/Svm1bFD",
+        image: "https://imgur.com/a/c0N5ybn",
         text: "Joya and Juvie bouquet",
         title: "99 nights survival"
     },
