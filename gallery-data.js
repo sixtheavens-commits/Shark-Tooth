@@ -8,9 +8,9 @@ const galleryData = [
         title: "Epic Gaming Fail #1"
     },
     {
-        image: "https://via.placeholder.com/400x300/00ffff/000000?text=S.T+Gaming+Moment+2",
-        text: "Watch him getting trolled",
-        title: "Epic Gaming Fail #2"
+        image: "https://imgur.com/a/Svm1bFD",
+        text: "Joya and Juvie bouquet",
+        title: "99 nights survival"
     },
     {
         image: "https://via.placeholder.com/400x300/ff1493/ffffff?text=S.T+Gaming+Moment+3",
